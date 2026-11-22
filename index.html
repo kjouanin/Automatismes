@@ -80,8 +80,8 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 .tb{height:8px;border-radius:9px;background:#e6e6e6;overflow:hidden}#tf{height:100%;width:100%;background:#111;border-radius:9px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1}.g2.one .qc{grid-column:1/3}
 .qc{position:relative;background:#fff;border:2px solid #111;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:48px 18px 20px;text-align:center;min-height:32vh}
-.q{font:600 clamp(1.7rem,4.6vw,3.8rem)/1.2 var(--ui);overflow-wrap:anywhere}
-.a{font:700 clamp(1.7rem,4.4vw,3.3rem) var(--ui);color:#0a7a3d;min-height:1.3em}
+.q{font:600 calc(clamp(1.7rem,4.6vw,3.8rem)*var(--z,1))/1.2 var(--ui);overflow-wrap:anywhere}
+.a{font:700 calc(clamp(1.7rem,4.4vw,3.3rem)*var(--z,1)) var(--ui);color:#0a7a3d;min-height:1.3em}
 .num{position:absolute;top:14px;left:18px;font:700 1.2rem var(--ui);color:#777}
 .exb{position:absolute;top:14px;left:18px;font:700 .85rem var(--ui);letter-spacing:.12em;text-transform:uppercase;color:#444}
 .a *,.cl b *{color:inherit!important}
@@ -94,6 +94,23 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 .katex{font-size:1.1em}
 .credit{font-size:.8rem;color:var(--mut);padding:8px 20px 28px;max-width:1180px;margin:0 auto}
 @media (max-width:900px){.cols{grid-template-columns:1fr}#panier{position:static;max-height:none;order:-1}.cg{grid-template-columns:1fr}.chips input{flex:1 1 100%;margin-left:0}}
+.zg{display:flex;align-items:center;gap:6px}
+#zv{min-width:3.4em;text-align:center;color:#666;font-variant-numeric:tabular-nums;cursor:pointer;font-size:.9rem}
+.cdmsg{font:600 clamp(1.4rem,3.5vw,2.6rem) var(--serif)}
+.cdn{font:700 calc(clamp(5rem,18vw,12rem)*var(--z,1))/1 var(--ui);font-variant-numeric:tabular-nums}
+.cdsub{font:600 clamp(1.2rem,3vw,2.2rem) var(--serif);color:#444}
+.sh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:26px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--acc)}.sh b{font:600 1.15rem var(--serif)}.sh span{color:var(--mut);font-size:.88rem}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.cr{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 14px;box-shadow:var(--sh)}
+.cr .num{position:static;flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--tint);color:var(--acc);font:700 .8rem var(--ui)}
+.cc{min-width:0;flex:1}.cf{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;font-size:1.1rem;overflow-wrap:anywhere}
+.cq{color:var(--ink)}.arr{color:var(--mut)}.ca{color:var(--ok);font-weight:600}
+.cq.dup{display:none}.noans .cq.dup{display:inline}.noans .ca,.noans .arr{display:none}
+.cdrow{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.85rem;color:var(--mut)}.cdrow input{width:70px}
+.share{margin-top:12px;padding-top:12px;border-top:1px dashed var(--bd)}.share>button{width:100%}
+.lkrow{display:flex;gap:8px;margin-top:8px}.lkrow input{flex:1;font-size:.8rem;min-width:0}
+#lkmsg{font-size:.85rem;margin-top:6px;color:var(--ok)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-size:.95rem;z-index:50;box-shadow:0 6px 24px rgba(0,0,0,.25);transition:opacity .3s}
 </style>
 </head>
 <body>
@@ -123,7 +140,7 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 </div>
 
 <div id="play" class="hidden">
-  <div class="bar"><span id="chr">00:00</span><span id="ttl" class="grow"></span><span id="pg" class="mut"></span><button id="pz">Pause</button><button id="quit">Quitter</button></div>
+  <div class="bar"><span id="chr">00:00</span><span id="ttl" class="grow"></span><span id="pg" class="mut"></span><span class="zg"><button id="zm" title="Réduire l’affichage (touche -)" aria-label="Réduire">A−</button><span id="zv" title="Cliquer pour revenir à 100 %">100 %</span><button id="zp" title="Agrandir l’affichage (touche +)" aria-label="Agrandir">A+</button></span><button id="pz">Pause</button><button id="quit">Quitter</button></div>
   <div class="tb hidden" id="tbar"><div id="tf"></div></div>
   <div class="g2" id="stage"></div>
   <div style="text-align:center"><button class="p big" id="nxt">Suivant</button></div>
@@ -1521,7 +1538,7 @@ function gen(it,seen){
 }
 
 /* ---- Bibliothèque MathsMentales (Apache 2.0) ---- */
-const kx=m=>{try{return katex.renderToString(m,{throwOnError:false})}catch(e){return esc(m)}};
+const kx=m=>{try{return katex.renderToString(m,{throwOnError:false,macros:{"\\ddfrac":"\\dfrac"}})}catch(e){return esc(m)}};
 const frm=s=>s.replace(/(\d)\.(\d)/g,"$1{,}$2");
 const frt=s=>s.replace(/(<[^>]*>)|(\d)\.(\d)/g,(m,t,a,b)=>t?t:a+","+b);
 const segs=(s,f,g)=>s.replace(/\$\$([^$]*)\$\$|([^$]+)/g,(m,mt,tx)=>mt!==undefined?f(mt):g(tx));
@@ -1532,7 +1549,18 @@ function rm(act,v,ans){
 }
 const nm=s=>segs(String(s),m=>kx(frm(m)),esc);
 function mk(u,sel,n){const a=new MMActivity(JSON.parse(JSON.stringify(DB.acts[u])));a.chosenOptions=a.options&&sel.o?sel.o.filter(i=>i>=0&&i<a.options.length):[];a.nbq=n;a.generate(n);return a}
-function gq(u,sel,n){if(BI[u])return bgq(u,sel.o[0],n);try{const a=mk(u,sel,n),r=[];for(let i=0;i<n;i++){if(a.questions[i]===undefined)continue;r.push({q:rm(a,a.questions[i]),a:rm(a,a.answers[i],1)})}return r}catch(e){return []}}
+const nzf=x=>String(x).replace(/\\color\{[^}]*\}/g,"").replace(/[\s{}]/g,"");
+const pcs=q=>String(q).replace(/\\text\{[^}]*\}/g,"|").replace(/\\(begin|end)\{[a-z*]+\}(\{[^}]*\})?/g,"|").replace(/\\\\/g,"|").replace(/\\(quad|qquad|footnotesize)/g,"|").split("|").map(nzf).filter(x=>x.length>1);
+function shq(act,v,fx){
+  const s=String(v==null?"":v);
+  if(act.type==="text"){
+    const m=[...s.matchAll(/\$\$([^$]*)\$\$/g)].map(x=>x[1]).filter(x=>x.trim()!=="(u_n)");
+    if(m.length)return{html:kx(fx(m.join("\\quad;\\quad "))),pieces:m.flatMap(pcs)};
+    return{html:rm(act,s.replace(/<svg[\s\S]*?<\/svg>/gi,"").replace(/<\/?(br|ul|ol|li|p|div)[^>]*>/gi," ")),pieces:[]};
+  }
+  return{html:rm(act,s),pieces:pcs(s)};
+}
+function gq(u,sel,n){if(BI[u])return bgq(u,sel.o[0],n);try{const a=mk(u,sel,n),r=[];for(let i=0;i<n;i++){const q=a.questions[i];if(q===undefined)continue;const an=a.answers[i],h=shq(a,q,frm),na=nzf(an);r.push({q:rm(a,q),a:rm(a,an,1),cq:h.html,dup:h.pieces.length>0&&h.pieces.every(p=>na.includes(p))})}return r}catch(e){return []}}
 function sample(u,i){if(BI[u])return bq(u,i).q;try{const a=mk(u,{o:[i]},1);return rm(a,a.questions[0])}catch(e){return "(exemple indisponible)"}}
 /* ---- Questions complémentaires : suites numériques ---- */
 const B=(l,q,v,a,c="")=>({l,q,v,a,c});
@@ -1567,20 +1595,20 @@ const BI={
 const fixm=m=>m.replace(/⟦/g,"{").replace(/⟧/g,"}").replace(/(\d),(\d)/g,"$1{,}$2");
 const bt=s=>segs(s,m=>kx(fixm(m)),esc);
 function bq(u,i){const r=gen(BI[u].types[i],new Set());return{q:bt(r.q),a:bt(r.a)}}
-function bgq(u,i,n){const t=BI[u].types[i],seen=new Set(),r=[];for(let k=0;k<n;k++){const x=gen(t,seen);r.push({q:bt(x.q),a:bt(x.a)})}return r}
+function bgq(u,i,n){const t=BI[u].types[i],seen=new Set(),r=[],uf=s=>s.replace(/⟦/g,"{").replace(/⟧/g,"}");for(let k=0;k<n;k++){const x=gen(t,seen),h=shq({type:"text"},uf(x.q),fixm),na=nzf(uf(x.a));r.push({q:bt(x.q),a:bt(x.a),cq:h.html,dup:h.pieces.length>0&&h.pieces.every(p=>na.includes(p))})}return r}
 
 const IDX=(()=>{const m=new Map();DB.lv.forEach(L=>L.th.forEach(T=>T.ch.forEach(c=>c.e.forEach(e=>{let x=m.get(e[0]);if(!x){x={u:e[0],t:e[1],d:e[2]||"",l:[]};m.set(e[0],x)}if(!x.l.includes(L.n))x.l.push(L.n)}))));return [...m.values()]})();
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 
 /* ---- État ---- */
 const KEY="calculmental-v4";
-let cid=1,C=[],S={},D=2,M=0,LVK="6",Q="";
+let cid=1,C=[],S={},D=2,M=0,CD=5,Z=1,LVK="6",Q="";
 const CID=id=>/^c\d+$/.test(id);
 const pk=k=>{const j=k.indexOf("|");return j<0?[k,-1]:[k.slice(0,j),+k.slice(j+1)]};
 const sid=(u,i)=>CID(u)?u:u+"|"+i;
 const normC=o=>({id:o.id||"c"+(cid++),l:String(o.l||"Ma question"),q:String(o.q||""),v:String(o.v||""),c:String(o.c||""),a:String(o.a||"")});
 try{let v=JSON.parse(localStorage.getItem(KEY));if(!v){const w=JSON.parse(localStorage.getItem("calculmental-v3"));if(w)v={c:w.c,s:{},d:w.d}}
- if(v){C=(v.c||[]).map(normC);S=v.s&&typeof v.s==="object"?v.s:{};D=v.d===1?1:2;M=v.m===1?1:0}}catch(e){}
+ if(v){C=(v.c||[]).map(normC);S=v.s&&typeof v.s==="object"?v.s:{};D=v.d===1?1:2;M=v.m===1?1:0;if(v.cd!=null)CD=Math.max(0,Math.min(30,+v.cd||0));if(v.z)Z=Math.max(.4,Math.min(3,+v.z||1))}}catch(e){}
 C.forEach(c=>cid=Math.max(cid,(+c.id.slice(1)||0)+1));
 Object.keys(S).forEach(k=>{const s=S[k];if(s&&Array.isArray(s.o)){delete S[k];if(CID(k))S[k]={n:s.n,ex:s.ex,t:s.t};else s.o.forEach(i=>{S[k+"|"+i]={n:s.n,ex:s.ex,t:s.t}})}});
 const exists=k=>{if(CID(k))return C.some(c=>c.id===k);const[u,i]=pk(k);if(BI[u])return i>=0&&i<BI[u].types.length;const a=DB.acts[u];return !!a&&(a.options?i>=0&&i<a.options.length:i===-1)};
@@ -1588,7 +1616,7 @@ Object.keys(S).forEach(k=>{if(!S[k]||!exists(k))delete S[k]});
 const hasSel=u=>Object.keys(S).some(k=>pk(k)[0]===u);
 const title=k=>{if(CID(k))return(C.find(c=>c.id===k)||{}).l;const u=pk(k)[0];return BI[u]?BI[u].title:DB.acts[u].title};
 const optName=k=>{if(CID(k))return "Question personnalisée";const[u,i]=pk(k);if(BI[u])return esc(BI[u].types[i].l);const a=DB.acts[u];return a.options?nm(a.options[i].name||"Type "+(i+1)):"Toute l’activité"};
-function save(){try{localStorage.setItem(KEY,JSON.stringify({c:C,s:S,d:D,m:M}))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({c:C,s:S,d:D,m:M,cd:CD,z:Z}))}catch(e){}}
 const opt=k=>{const s=S[k]||{};return{n:Math.max(1,Math.min(60,+s.n||6)),ex:!!s.ex,t:s.t==null?10:Math.max(0,+s.t||0)}};
 
 /* ---- Bibliothèque ---- */
@@ -1654,22 +1682,24 @@ function drawPanier(){
   $("#panier").innerHTML=`<h2>Mon panier</h2>
   <div class="mode"><span>Affichage :</span>${rad("d",1,"1 question",D===1)}${rad("d",2,"2 questions",D===2)}</div>
   <div class="mode" style="margin-top:6px"><span>Ordre :</span>${rad("m",0,"Dans l’ordre",M===0)}${rad("m",1,"Mélangé",M===1)}</div>
-  <p class="mut" style="font-size:.8rem;margin:8px 0 0">Temps 0 = passage manuel (Espace). Avec 2 questions affichées, le temps de l’écran est doublé. En mode mélangé, les exemples passent d’abord, puis toutes les questions sont tirées dans le désordre.</p>
+  <div class="cdrow"><span>Décompte avant les questions :</span><input type="number" id="cd" min="0" max="30" value="${CD}"> s</div>
+  <p class="mut" style="font-size:.8rem;margin:8px 0 0">Temps 0 = passage manuel (Espace). Avec 2 questions affichées, le temps de l’écran est doublé. Le décompte (0 = aucun) suit chaque exemple ; en mode mélangé, les exemples passent d’abord, puis les questions sont tirées dans le désordre.</p>
   ${ids.length?ids.map(id=>{const o=opt(id);return `<div class="pi" data-id="${esc(id)}"><div class="head2"><b>${esc(title(id))}</b><button data-a="up" title="Monter">↑</button><button data-a="down" title="Descendre">↓</button><button data-a="del" title="Retirer">✕</button></div>
    <div class="mut" style="font-size:.82rem;margin-bottom:6px">${optName(id)}</div>
    <div class="prow"><label>Questions<input type="number" min="1" max="60" data-f="n" value="${o.n}"></label><label>Temps par question (s)<input type="number" min="0" max="600" data-f="t" value="${o.t}"></label></div>
    <label class="chk"><input type="checkbox" data-f="ex" ${o.ex?"checked":""}> Exemple avant la série</label></div>`}).join(""):'<p class="mut">Ouvre une activité dans la liste et coche un ou plusieurs types de questions : chaque case devient une ligne réglable du panier.</p>'}
-  <div class="pf"><span class="mut" id="ptot"></span><span class="grow"></span><button id="clr">Vider</button><button class="p big" id="go" ${ids.length?"":"disabled"}>Démarrer</button></div>`;
+  <div class="pf"><span class="mut" id="ptot"></span><span class="grow"></span><button id="clr">Vider</button><button class="p big" id="go" ${ids.length?"":"disabled"}>Démarrer</button></div>
+  ${ids.length?`<div class="share"><button id="lk">🔗 Créer un lien vers ce panier</button><div id="lkbox" class="hidden"><div class="lkrow"><input id="lkurl" readonly aria-label="Lien du panier"><button id="lkcp">Copier</button></div></div><div id="lkmsg"></div></div>`:""}`;
   tot();
 }
 $("#panier").addEventListener("input",e=>{
-  const el=e.target;if(el.name==="d"){D=+el.value;save();return}if(el.name==="m"){M=+el.value;save();return}
+  const el=e.target;if(el.id==="cd"){CD=Math.max(0,Math.min(30,+el.value||0));save();return}if(el.name==="d"){D=+el.value;save();return}if(el.name==="m"){M=+el.value;save();return}
   const id=el.closest(".pi")?.dataset.id,f=el.dataset.f;if(!id||!f||!S[id])return;
   S[id][f]=el.type==="checkbox"?el.checked:Math.max(f==="n"?1:0,Math.min(f==="n"?60:600,+el.value||0));
   save();tot()});
 $("#panier").addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
-  if(b.id==="go")return begin();
+  if(b.id==="go")return begin();if(b.id==="lk")return mkLink();if(b.id==="lkcp")return cpLink();
   if(b.id==="clr"){const us=new Set(Object.keys(S).map(k=>pk(k)[0]));S={};save();drawPanier();us.forEach(syncSel);return}
   const id=b.closest(".pi")?.dataset.id,a=b.dataset.a;if(!id)return;
   if(a==="del"){delete S[id];save();drawPanier();syncSel(pk(id)[0]);return}
@@ -1698,10 +1728,46 @@ $("#addc").onclick=()=>{C.push(normC({l:"Ma question",q:"{a} + {b}",v:"a: 2..20\
 $("#exp").onclick=()=>{const t=$("#io");t.value=JSON.stringify({c:C,s:S,d:D,m:M});t.focus();t.select()};
 $("#imp").onclick=()=>{try{const v=JSON.parse($("#io").value);if(!v||!Array.isArray(v.c))throw 0;C=v.c.map(normC);D=v.d===1?1:2;M=v.m===1?1:0;S=v.s&&typeof v.s==="object"?v.s:{};C.forEach(c=>cid=Math.max(cid,(+c.id.slice(1)||0)+1));save();drawC();alert("Import réussi.")}catch(e){alert("Texte d’import non valide.")}};
 
+/* ---- Lien de partage ---- */
+const b64=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const unb64=s=>decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/"))));
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>{t.style.opacity=0},3200);setTimeout(()=>t.remove(),3600)}
+function packLink(){
+  const ids=Object.keys(S).filter(exists);
+  const cu=[...new Set(ids.filter(CID))].map(id=>C.find(c=>c.id===id)).map(c=>[c.id,c.l,c.q,c.v,c.c,c.a]);
+  const o={s:ids.map(k=>{const p=opt(k);return[k.replace(".json",""),p.n,p.t,p.ex?1:0]}),d:D,m:M,cd:CD};
+  if(cu.length)o.c=cu;
+  return location.href.split("#")[0]+"#p="+b64(JSON.stringify(o));
+}
+function loadLink(h){
+  try{
+    const o=JSON.parse(unb64(h.slice(3))),map={};
+    (o.c||[]).forEach(([id,l,q,v,c,a])=>{let x=C.find(y=>y.l===l&&y.q===q&&y.v===v&&y.c===c&&y.a===a);if(!x){x=normC({l,q,v,c,a});C.push(x)}map[id]=x.id});
+    const ns={};
+    (o.s||[]).forEach(([k,n,t,e])=>{
+      let key;if(map[k]!==undefined)key=map[k];else{const[u,i]=pk(k);key=sid(BI[u]||DB.acts[u]?u:u+".json",i)}
+      if(exists(key))ns[key]={n:+n||6,t:+t||0,ex:!!e}});
+    S=ns;D=o.d===1?1:2;M=o.m===1?1:0;if(o.cd!=null)CD=Math.max(0,Math.min(30,+o.cd||0));
+    save();return Object.keys(ns).length;
+  }catch(e){return -1}
+}
+async function copyTxt(t){try{await navigator.clipboard.writeText(t);return true}catch(e){try{const i=$("#lkurl");i.focus();i.select();return !!document.execCommand("copy")}catch(_){return false}}}
+function mkLink(){
+  if(!/^https?:$/.test(location.protocol)){$("#lkbox").classList.add("hidden");$("#lkmsg").textContent="Ce lien serait inutilisable ici. Ouvre d’abord le site depuis son adresse web (celle de GitHub, qui commence par https://), puis clique à nouveau sur ce bouton.";return}
+  const u=packLink();$("#lkbox").classList.remove("hidden");$("#lkurl").value=u;$("#lkurl").select();
+  const loc=location.protocol==="file:";
+  copyTxt(u).then(ok=>{$("#lkmsg").textContent=(ok?"Lien copié ✓ Colle-le dans un mail, l’ENT ou tes favoris.":"Sélectionne le lien ci-dessus et copie-le (Ctrl+C).")+(loc?" Attention : ce lien ne marchera que sur cet ordinateur ; ouvre le site depuis son adresse web pour créer un lien partageable.":"")});
+}
+function cpLink(){const u=$("#lkurl").value;copyTxt(u).then(ok=>{$("#lkmsg").textContent=ok?"Lien copié ✓":"Copie impossible : sélectionne le lien et fais Ctrl+C."})}
+const loaded=n=>n>=0&&toast("Panier chargé depuis le lien : "+n+" ligne"+(n>1?"s":""));
+if(location.hash.startsWith("#p="))setTimeout(()=>loaded(Object.keys(S).length),300),loadLink(location.hash);
+window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#p=")){const n=loadLink(location.hash);view("#home");loaded(n)}});
+
 /* ---- Séance ---- */
 let steps=[],si=0,series=[],t0=0,tm=null,end=0,paused=false,pAt=0,order=[];
 const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const pad=n=>String(n).padStart(2,"0"),dur=()=>{const s=Math.floor((Date.now()-t0)/1000);return pad(Math.floor(s/60))+":"+pad(s%60)};
+function setZ(z){Z=Math.max(.4,Math.min(3,Math.round(z*10)/10));document.documentElement.style.setProperty("--z",Z);$("#zv").textContent=Math.round(Z*100)+" %";save()}
 function view(id){
   ["#home","#custom","#play","#corr"].forEach(x=>$(x).classList.toggle("hidden",x!==id));
   $("#top").classList.toggle("hidden",id==="#play"||id==="#corr");
@@ -1712,10 +1778,9 @@ $("#tl").onclick=()=>view("#home");$("#tc").onclick=()=>view("#custom");
 function buildSeries(k){
   const o=opt(k);
   if(CID(k)){
-    const ty=C.find(c=>c.id===k),seen=new Set(),qs=[];
-    for(let i=0;i<o.n;i++){const r=gen(ty,seen);qs.push({q:esc(r.q),a:esc(r.a)})}
-    let ex=null;if(o.ex){const r=gen(ty,seen);ex={q:esc(r.q),a:esc(r.a)}}
-    return{t:ty.l,sub:"",qs,sec:o.t,ex};
+    const ty=C.find(c=>c.id===k),seen=new Set(),qs=[],mk1=r=>({q:esc(r.q),a:esc(r.a),cq:esc(r.q),dup:false});
+    for(let i=0;i<o.n;i++)qs.push(mk1(gen(ty,seen)));
+    return{t:ty.l,sub:"",qs,sec:o.t,ex:o.ex?mk1(gen(ty,seen)):null};
   }
   const [u,i]=pk(k),sel={o:[i]},qs=gq(u,sel,o.n),ex=o.ex?(gq(u,sel,1)[0]||null):null;
   return{t:title(k),sub:optName(k),qs,sec:o.t,ex};
@@ -1730,15 +1795,18 @@ function begin(){
   if(!series.length){alert("Impossible de générer des questions pour ce panier.");return}
   steps=[];order=[];
   const exStep=(s,k)=>({k:"ex",ex:s.ex,title:s.t,pg:"Exemple · ligne "+(k+1)+" / "+series.length});
+  const cdStep=title=>{if(CD>0)steps.push({k:"cd",title,pg:"Prêts ?",len:CD*1000})};
   if(M===1){
     series.forEach((s,k)=>{if(s.ex)steps.push(exStep(s,k))});
-    const flat=shuf(series.flatMap(s=>s.qs.map(x=>({q:x.q,a:x.a,sec:s.sec,t:s.t}))));
+    const flat=shuf(series.flatMap(s=>s.qs.map(x=>({...x,sec:s.sec,t:s.t}))));
     flat.forEach((x,i)=>x.n=i+1);order=flat;
+    cdStep("Questions mélangées");
     chunk(flat,"Questions mélangées",(j,c)=>"Questions "+(j+1)+(c>1?"–"+(j+c):"")+" / "+flat.length);
   }else{
     series.forEach((s,k)=>{
       if(s.ex)steps.push(exStep(s,k));
-      chunk(s.qs.map((x,i)=>({q:x.q,a:x.a,sec:s.sec,n:i+1})),s.t,()=>"Série "+(k+1)+" / "+series.length);
+      if(s.ex||k===0)cdStep(s.t);
+      chunk(s.qs.map((x,i)=>({...x,sec:s.sec,n:i+1})),s.t,()=>"Série "+(k+1)+" / "+series.length);
     });
   }
   si=0;paused=false;$("#pz").textContent="Pause";view("#play");t0=Date.now();clearInterval(tm);tm=setInterval(tick,200);showStep();
@@ -1747,7 +1815,11 @@ function showStep(){
   const st=steps[si];
   $("#ttl").textContent=st.title;$("#pg").textContent=st.pg;
   $("#stage").className="g2"+(D===1?" one":"");
-  if(st.k==="ex"){
+  if(st.k==="cd"){
+    end=Date.now()+st.len;
+    $("#stage").innerHTML=`<div class="qc" style="grid-column:1/3"><div class="cdmsg">Préparez-vous…</div><div class="cdn" id="cdn">${Math.ceil(st.len/1000)}</div><div class="cdsub">ça commence !</div></div>`;
+    $("#nxt").textContent="Passer le décompte";
+  }else if(st.k==="ex"){
     end=0;
     $("#stage").innerHTML=`<div class="qc" style="grid-column:1/3"><span class="exb">Exemple</span><div class="q">${st.ex.q}</div><div class="a">${st.rev?"→ "+st.ex.a:""}</div></div>`;
     $("#nxt").textContent=st.rev?"Suivant":"Voir la réponse";
@@ -1761,7 +1833,9 @@ function showStep(){
 function tick(){
   if(paused)return;
   $("#chr").textContent=dur();
-  if(end){const left=end-Date.now();$("#tf").style.width=Math.max(0,left/steps[si].len*100)+"%";if(left<=0)next()}
+  if(end){const left=end-Date.now(),st=steps[si];$("#tf").style.width=Math.max(0,left/st.len*100)+"%";
+    if(st.k==="cd"){const c=$("#cdn");if(c)c.textContent=Math.max(1,Math.ceil(left/1000))}
+    if(left<=0)next()}
 }
 function pz(){
   if(paused){const d=Date.now()-pAt;t0+=d;if(end)end+=d;paused=false;$("#pz").textContent="Pause"}
@@ -1772,26 +1846,35 @@ function next(){
   const st=steps[si];if(st.k==="ex"&&!st.rev){st.rev=true;showStep();return}
   if(si>=steps.length-1)return finish();si++;showStep();
 }
+const card=x=>`<div class="cr"><span class="num">${x.n}</span><div class="cc"><div class="cf"><span class="cq${x.dup?" dup":""}">${x.cq||x.q}</span>${x.dup?"":'<span class="arr">→</span>'}<span class="ca">${x.a}</span></div>${x.t?`<div class="cap">${esc(x.t)}</div>`:""}</div></div>`;
 function finish(){
-  clearInterval(tm);end=0;$("#tt").textContent="Séance terminée en "+dur()+(M===1?" (questions mélangées)":"")+".";
+  clearInterval(tm);end=0;const nq=series.reduce((t,s)=>t+s.qs.length,0);
+  $("#tt").textContent="Terminé en "+dur()+" · "+nq+" questions"+(M===1?" (mélangées)":"")+".";
   $("#cb").className="";$("#tog").textContent="Masquer les réponses (énoncés seuls)";
   $("#cb").innerHTML=M===1
-   ?`<div class="cg" style="margin-top:14px">${order.map(x=>`<div class="cl"><span class="num">${x.n}.</span>${x.q} <b>→ ${x.a}</b><span class="cap">${esc(x.t)}</span></div>`).join("")}</div>`
-   :series.map(s=>`<h3 style="margin-top:18px">${esc(s.t)}</h3>${s.sub?`<div class="mut" style="font-size:.85rem;margin-bottom:8px">${s.sub}</div>`:""}<div class="cg">${s.qs.map((x,i)=>`<div class="cl"><span class="num">${i+1}.</span>${x.q} <b>→ ${x.a}</b></div>`).join("")}</div>`).join("");
+   ?`<div class="cgrid" style="margin-top:14px">${order.map(card).join("")}</div>`
+   :series.map(s=>`<div class="sh"><b>${esc(s.t)}</b>${s.sub?`<span>${s.sub}</span>`:""}</div><div class="cgrid">${s.qs.map((x,i)=>card({...x,n:i+1})).join("")}</div>`).join("");
   view("#corr");window.scrollTo(0,0);
 }
 $("#tog").onclick=()=>{const h=$("#cb").classList.toggle("noans");$("#tog").textContent=h?"Afficher les réponses":"Masquer les réponses (énoncés seuls)"};
 $("#again").onclick=begin;
 $("#nxt").onclick=e=>{e.currentTarget.blur();next()};
 $("#pz").onclick=e=>{e.currentTarget.blur();pz()};
+$("#zp").onclick=e=>{e.currentTarget.blur();setZ(Z+.1)};
+$("#zm").onclick=e=>{e.currentTarget.blur();setZ(Z-.1)};
+$("#zv").onclick=()=>setZ(1);
 $("#quit").onclick=()=>{clearInterval(tm);view("#home")};
 $("#back").onclick=()=>view("#home");
 document.addEventListener("keydown",e=>{
   if($("#play").classList.contains("hidden"))return;
   if(e.key===" "||e.key==="Enter"||e.key==="ArrowRight"){e.preventDefault();document.activeElement?.blur();next()}
   else if(e.key==="p"||e.key==="P")pz();
+  else if(e.key==="+"||e.key==="="||e.key==="Add")setZ(Z+.1);
+  else if(e.key==="-"||e.key==="_"||e.key==="Subtract")setZ(Z-.1);
+  else if(e.key==="0")setZ(1);
   else if(e.key==="Escape"){clearInterval(tm);view("#home")}
 });
+setZ(Z);
 view("#home");
 </script>
 <div class="credit">Activités et moteur de génération : <a href="https://mathsmentales.net" target="_blank" rel="noopener">MathsMentales</a> de Sébastien Cogez (licence Apache 2.0). Rendu mathématique : KaTeX (MIT).</div>
