@@ -76,10 +76,10 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 #play button.p{background:#111;color:#fff;border-color:#111}
 .bar{display:flex;align-items:center;gap:12px}
 #chr{font:700 1.5rem var(--ui);font-variant-numeric:tabular-nums;background:#f4f4f4;border:1px solid #cfcfcf;border-radius:999px;padding:2px 16px}
-#ttl{font:600 1.15rem var(--serif)}#pg{color:#666}
-.tb{height:8px;border-radius:9px;background:#e6e6e6;overflow:hidden}#tf{height:100%;width:100%;background:#111;border-radius:9px}
+#ttl{font:600 1.15rem var(--serif)}#pg{font:600 1.3rem var(--ui);color:#111}#pg .sx{color:#777;font-weight:500;font-size:1rem}
+.tb{height:16px;border-radius:99px;background:#dbe4f5;overflow:hidden}#tf{height:100%;width:0;background:linear-gradient(90deg,#60a5fa,#2563eb 60%,#1d4ed8);border-radius:99px;will-change:width}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1}.g2.one .qc{grid-column:1/3}
-.qc{position:relative;background:#fff;border:2px solid #111;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:48px 18px 20px;text-align:center;min-height:32vh}
+.qc{position:relative;background:#fff;border:2px solid #111;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:84px 18px 26px;text-align:center;min-height:32vh}
 .q{font:600 calc(clamp(1.7rem,4.6vw,3.8rem)*var(--z,1))/1.2 var(--ui);overflow-wrap:anywhere}
 .a{font:700 calc(clamp(1.7rem,4.4vw,3.3rem)*var(--z,1)) var(--ui);color:#0a7a3d;min-height:1.3em}
 .num{position:absolute;top:14px;left:18px;font:700 1.2rem var(--ui);color:#777}
@@ -105,12 +105,32 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 .cr .num{position:static;flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--tint);color:var(--acc);font:700 .8rem var(--ui)}
 .cc{min-width:0;flex:1}.cf{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;font-size:1.1rem;overflow-wrap:anywhere}
 .cq{color:var(--ink)}.arr{color:var(--mut)}.ca{color:var(--ok);font-weight:600}
-.cq.dup{display:none}.noans .cq.dup{display:inline}.noans .ca,.noans .arr{display:none}
+
 .cdrow{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.85rem;color:var(--mut)}.cdrow input{width:70px}
 .share{margin-top:12px;padding-top:12px;border-top:1px dashed var(--bd)}.share>button{width:100%}
 .lkrow{display:flex;gap:8px;margin-top:8px}.lkrow input{flex:1;font-size:.8rem;min-width:0}
 #lkmsg{font-size:.85rem;margin-top:6px;color:var(--ok)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 18px;border-radius:999px;font-size:.95rem;z-index:50;box-shadow:0 6px 24px rgba(0,0,0,.25);transition:opacity .3s}
+.qc .num{position:absolute;top:16px;left:18px;display:grid;place-items:center;min-width:2.3em;height:2.3em;padding:0 .55em;border-radius:999px;border:2.5px solid #1d4ed8;color:#1d4ed8;background:#fff;font:800 clamp(1.2rem,2.1vw,1.8rem) var(--ui)}
+.cdw{position:relative;width:min(46vh,70vw);aspect-ratio:1;display:grid;place-items:center;margin:auto;grid-column:1/3}
+.cdw::before{content:"";position:absolute;inset:10%;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.14),transparent 70%);animation:breathe 1s ease-in-out infinite}
+.cdw svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.cdw .trk{stroke:#e3e8f2}.cdw .ring{stroke:#2563eb;stroke-linecap:round}
+.cdnum{position:relative;font:800 calc(min(26vh,38vw)*var(--z,1))/1 var(--ui);color:#1d4ed8;font-variant-numeric:tabular-nums;animation:pop .9s cubic-bezier(.2,.9,.3,1.25)}
+@keyframes pop{0%{transform:scale(1.8);opacity:0}30%{opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes breathe{50%{transform:scale(1.14);opacity:.55}}
+@media (prefers-reduced-motion:reduce){.cdnum,.cdw::before{animation:none}}
+#corr{max-width:1500px}
+#corr h1{font-size:2rem}
+.ctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 4px}
+.crh{display:grid;grid-template-columns:3.4rem minmax(0,1fr) minmax(0,1fr);gap:0 28px;padding:0 20px 6px;color:var(--mut);font:700 .8rem var(--ui);letter-spacing:.1em;text-transform:uppercase}
+.crow{display:grid;grid-template-columns:3.4rem minmax(0,1fr) minmax(0,1fr);gap:0 28px;align-items:center;padding:16px 20px;margin-bottom:10px;background:var(--card);border:1px solid var(--bd);border-radius:16px;box-shadow:var(--sh)}
+.crow .num{position:static;display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:50%;background:var(--tint);color:var(--acc);font:800 1.15rem var(--ui)}
+.crow .cq,.crow .ca{font-size:calc(clamp(1.35rem,2.5vw,2.3rem)*var(--z,1));overflow-wrap:anywhere}
+.crow .cq{color:var(--ink)}
+.crow .ca{color:var(--ok);font-weight:700;border-left:3px solid var(--bd);padding-left:28px}
+.noans .ca{visibility:hidden}
+@media (max-width:760px){.crow,.crh{grid-template-columns:2.6rem 1fr}.crow .ca{grid-column:2;border-left:0;padding:8px 0 0}.crh span:last-child{display:none}}
 </style>
 </head>
 <body>
@@ -148,7 +168,7 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 
 <div id="corr" class="wrap hidden">
   <h1>Correction</h1><p class="mut" id="tt"></p>
-  <p><button id="tog">Masquer les réponses (énoncés seuls)</button></p>
+  <div class="ctl"><button id="tog">Masquer les réponses (énoncés seuls)</button><span class="grow"></span><span class="zg"><button id="zm2" aria-label="Réduire">A−</button><span id="zv2" title="Revenir à 100 %" style="cursor:pointer;min-width:3.4em;text-align:center">100 %</span><button id="zp2" aria-label="Agrandir">A+</button></span></div>
   <div id="cb"></div>
   <p><button class="p" id="again">Rejouer (nouveaux nombres)</button> <button id="back">Retour aux questions</button></p>
 </div>
@@ -1602,13 +1622,13 @@ const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 
 /* ---- État ---- */
 const KEY="calculmental-v4";
-let cid=1,C=[],S={},D=2,M=0,CD=5,Z=1,LVK="6",Q="";
+let cid=1,C=[],S={},D=2,M=0,CD=3,Z=1,LVK="6",Q="";
 const CID=id=>/^c\d+$/.test(id);
 const pk=k=>{const j=k.indexOf("|");return j<0?[k,-1]:[k.slice(0,j),+k.slice(j+1)]};
 const sid=(u,i)=>CID(u)?u:u+"|"+i;
 const normC=o=>({id:o.id||"c"+(cid++),l:String(o.l||"Ma question"),q:String(o.q||""),v:String(o.v||""),c:String(o.c||""),a:String(o.a||"")});
 try{let v=JSON.parse(localStorage.getItem(KEY));if(!v){const w=JSON.parse(localStorage.getItem("calculmental-v3"));if(w)v={c:w.c,s:{},d:w.d}}
- if(v){C=(v.c||[]).map(normC);S=v.s&&typeof v.s==="object"?v.s:{};D=v.d===1?1:2;M=v.m===1?1:0;if(v.cd!=null)CD=Math.max(0,Math.min(30,+v.cd||0));if(v.z)Z=Math.max(.4,Math.min(3,+v.z||1))}}catch(e){}
+ if(v){C=(v.c||[]).map(normC);S=v.s&&typeof v.s==="object"?v.s:{};D=v.d===1?1:2;M=v.m===1?1:0;if(v.cd!=null&&+v.cd!==5)CD=Math.max(0,Math.min(30,+v.cd||0));if(v.z)Z=Math.max(.4,Math.min(3,+v.z||1))}}catch(e){}
 C.forEach(c=>cid=Math.max(cid,(+c.id.slice(1)||0)+1));
 Object.keys(S).forEach(k=>{const s=S[k];if(s&&Array.isArray(s.o)){delete S[k];if(CID(k))S[k]={n:s.n,ex:s.ex,t:s.t};else s.o.forEach(i=>{S[k+"|"+i]={n:s.n,ex:s.ex,t:s.t}})}});
 const exists=k=>{if(CID(k))return C.some(c=>c.id===k);const[u,i]=pk(k);if(BI[u])return i>=0&&i<BI[u].types.length;const a=DB.acts[u];return !!a&&(a.options?i>=0&&i<a.options.length:i===-1)};
@@ -1617,7 +1637,7 @@ const hasSel=u=>Object.keys(S).some(k=>pk(k)[0]===u);
 const title=k=>{if(CID(k))return(C.find(c=>c.id===k)||{}).l;const u=pk(k)[0];return BI[u]?BI[u].title:DB.acts[u].title};
 const optName=k=>{if(CID(k))return "Question personnalisée";const[u,i]=pk(k);if(BI[u])return esc(BI[u].types[i].l);const a=DB.acts[u];return a.options?nm(a.options[i].name||"Type "+(i+1)):"Toute l’activité"};
 function save(){try{localStorage.setItem(KEY,JSON.stringify({c:C,s:S,d:D,m:M,cd:CD,z:Z}))}catch(e){}}
-const opt=k=>{const s=S[k]||{};return{n:Math.max(1,Math.min(60,+s.n||6)),ex:!!s.ex,t:s.t==null?10:Math.max(0,+s.t||0)}};
+const opt=k=>{const s=S[k]||{};return{n:Math.max(1,Math.min(60,+s.n||6)),ex:!!s.ex,t:s.t==null?30:Math.max(0,+s.t||0)}};
 
 /* ---- Bibliothèque ---- */
 const ex1=(u,i)=>CID(u)?esc(gen(C.find(c=>c.id===u),new Set()).q):sample(u,i);
@@ -1670,7 +1690,7 @@ function syncSel(u){
 }
 $("#lib").addEventListener("input",e=>{
   const el=e.target;if(!el.classList||!el.classList.contains("cb"))return;const u=el.dataset.u,k=sid(u,+el.dataset.i);
-  if(el.checked)S[k]={n:6,ex:false,t:10};else delete S[k];
+  if(el.checked)S[k]={n:6,ex:false,t:30};else delete S[k];
   save();drawPanier();syncSel(u);
 });
 
@@ -1767,7 +1787,7 @@ window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#p=")){co
 let steps=[],si=0,series=[],t0=0,tm=null,end=0,paused=false,pAt=0,order=[];
 const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const pad=n=>String(n).padStart(2,"0"),dur=()=>{const s=Math.floor((Date.now()-t0)/1000);return pad(Math.floor(s/60))+":"+pad(s%60)};
-function setZ(z){Z=Math.max(.4,Math.min(3,Math.round(z*10)/10));document.documentElement.style.setProperty("--z",Z);$("#zv").textContent=Math.round(Z*100)+" %";save()}
+function setZ(z){Z=Math.max(.4,Math.min(3,Math.round(z*10)/10));document.documentElement.style.setProperty("--z",Z);$("#zv").textContent=$("#zv2").textContent=Math.round(Z*100)+" %";save()}
 function view(id){
   ["#home","#custom","#play","#corr"].forEach(x=>$(x).classList.toggle("hidden",x!==id));
   $("#top").classList.toggle("hidden",id==="#play"||id==="#corr");
@@ -1785,6 +1805,7 @@ function buildSeries(k){
   const [u,i]=pk(k),sel={o:[i]},qs=gq(u,sel,o.n),ex=o.ex?(gq(u,sel,1)[0]||null):null;
   return{t:title(k),sub:optName(k),qs,sec:o.t,ex};
 }
+const pgq=(j,c,t)=>"<b>Question"+(c>1?"s ":" ")+(j+1)+(c>1?"–"+(j+c):"")+"</b> / "+t;
 function chunk(items,title,pgf){
   for(let j=0;j<items.length;j+=D){const it=items.slice(j,j+D),secs=it.map(x=>x.sec);
     steps.push({k:"qs",items:it,title,len:secs.every(x=>x>0)?secs.reduce((a,b)=>a+b,0)*1000:0,pg:pgf(j,it.length)})}
@@ -1795,30 +1816,30 @@ function begin(){
   if(!series.length){alert("Impossible de générer des questions pour ce panier.");return}
   steps=[];order=[];
   const exStep=(s,k)=>({k:"ex",ex:s.ex,title:s.t,pg:"Exemple · ligne "+(k+1)+" / "+series.length});
-  const cdStep=title=>{if(CD>0)steps.push({k:"cd",title,pg:"Prêts ?",len:CD*1000})};
+  const cdStep=()=>{if(CD>0)steps.push({k:"cd",title:"",pg:"",len:CD*1000})};
   if(M===1){
     series.forEach((s,k)=>{if(s.ex)steps.push(exStep(s,k))});
     const flat=shuf(series.flatMap(s=>s.qs.map(x=>({...x,sec:s.sec,t:s.t}))));
     flat.forEach((x,i)=>x.n=i+1);order=flat;
     cdStep("Questions mélangées");
-    chunk(flat,"Questions mélangées",(j,c)=>"Questions "+(j+1)+(c>1?"–"+(j+c):"")+" / "+flat.length);
+    chunk(flat,"Questions mélangées",(j,c)=>pgq(j,c,flat.length));
   }else{
     series.forEach((s,k)=>{
       if(s.ex)steps.push(exStep(s,k));
       if(s.ex||k===0)cdStep(s.t);
-      chunk(s.qs.map((x,i)=>({...x,sec:s.sec,n:i+1})),s.t,()=>"Série "+(k+1)+" / "+series.length);
+      chunk(s.qs.map((x,i)=>({...x,sec:s.sec,n:i+1})),s.t,(j,c)=>pgq(j,c,s.qs.length)+(series.length>1?'<span class="sx"> · série '+(k+1)+' / '+series.length+'</span>':""));
     });
   }
-  si=0;paused=false;$("#pz").textContent="Pause";view("#play");t0=Date.now();clearInterval(tm);tm=setInterval(tick,200);showStep();
+  si=0;paused=false;$("#pz").textContent="Pause";view("#play");t0=Date.now();cancelAnimationFrame(tm);const lp=()=>{tick();tm=requestAnimationFrame(lp)};tm=requestAnimationFrame(lp);showStep();
 }
 function showStep(){
   const st=steps[si];
-  $("#ttl").textContent=st.title;$("#pg").textContent=st.pg;
+  $("#ttl").textContent=st.title;$("#pg").innerHTML=st.pg;
   $("#stage").className="g2"+(D===1?" one":"");
   if(st.k==="cd"){
-    end=Date.now()+st.len;
-    $("#stage").innerHTML=`<div class="qc" style="grid-column:1/3"><div class="cdmsg">Préparez-vous…</div><div class="cdn" id="cdn">${Math.ceil(st.len/1000)}</div><div class="cdsub">ça commence !</div></div>`;
-    $("#nxt").textContent="Passer le décompte";
+    const n0=Math.ceil(st.len/1000);end=Date.now()+st.len;
+    $("#stage").innerHTML=`<div class="cdw"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="trk" cx="50" cy="50" r="45" fill="none" stroke-width="5"/><circle class="ring" id="ring" cx="50" cy="50" r="45" fill="none" stroke-width="5" stroke-dasharray="282.74" stroke-dashoffset="282.74"/></svg><div class="cdnum" id="cdn" data-v="${n0}">${n0}</div></div>`;
+    $("#nxt").textContent="Passer";
   }else if(st.k==="ex"){
     end=0;
     $("#stage").innerHTML=`<div class="qc" style="grid-column:1/3"><span class="exb">Exemple</span><div class="q">${st.ex.q}</div><div class="a">${st.rev?"→ "+st.ex.a:""}</div></div>`;
@@ -1828,14 +1849,20 @@ function showStep(){
     end=st.len?Date.now()+st.len:0;
     $("#nxt").textContent=si===steps.length-1?"Voir la correction":"Suivant";
   }
-  $("#tbar").classList.toggle("hidden",!end);$("#tf").style.width="100%";
+  $("#tbar").classList.toggle("hidden",!end||st.k==="cd");$("#tf").style.width="0%";
 }
+const RC=282.74;
 function tick(){
   if(paused)return;
-  $("#chr").textContent=dur();
-  if(end){const left=end-Date.now(),st=steps[si];$("#tf").style.width=Math.max(0,left/st.len*100)+"%";
-    if(st.k==="cd"){const c=$("#cdn");if(c)c.textContent=Math.max(1,Math.ceil(left/1000))}
-    if(left<=0)next()}
+  const tx=dur();if($("#chr").textContent!==tx)$("#chr").textContent=tx;
+  if(!end)return;
+  const st=steps[si],left=end-Date.now(),p=Math.min(1,Math.max(0,1-left/st.len));
+  if(st.k==="cd"){
+    const r=$("#ring");if(r)r.style.strokeDashoffset=RC*(1-p);
+    const v=Math.max(1,Math.ceil(left/1000)),c=$("#cdn");
+    if(c&&c.dataset.v!==String(v)){c.dataset.v=v;c.textContent=v;c.style.animation="none";void c.offsetWidth;c.style.animation=""}
+  }else $("#tf").style.width=(p*100)+"%";
+  if(left<=0)next();
 }
 function pz(){
   if(paused){const d=Date.now()-pAt;t0+=d;if(end)end+=d;paused=false;$("#pz").textContent="Pause"}
@@ -1846,14 +1873,13 @@ function next(){
   const st=steps[si];if(st.k==="ex"&&!st.rev){st.rev=true;showStep();return}
   if(si>=steps.length-1)return finish();si++;showStep();
 }
-const card=x=>`<div class="cr"><span class="num">${x.n}</span><div class="cc"><div class="cf"><span class="cq${x.dup?" dup":""}">${x.cq||x.q}</span>${x.dup?"":'<span class="arr">→</span>'}<span class="ca">${x.a}</span></div>${x.t?`<div class="cap">${esc(x.t)}</div>`:""}</div></div>`;
+const head='<div class="crh"><span></span><span>Question</span><span>Réponse</span></div>';
+const row=x=>`<div class="crow"><span class="num">${x.n}</span><div class="cq">${x.cq||x.q}${x.t?`<div class="cap">${esc(x.t)}</div>`:""}</div><div class="ca">${x.a}</div></div>`;
 function finish(){
-  clearInterval(tm);end=0;const nq=series.reduce((t,s)=>t+s.qs.length,0);
+  cancelAnimationFrame(tm);end=0;const nq=series.reduce((t,s)=>t+s.qs.length,0);
   $("#tt").textContent="Terminé en "+dur()+" · "+nq+" questions"+(M===1?" (mélangées)":"")+".";
   $("#cb").className="";$("#tog").textContent="Masquer les réponses (énoncés seuls)";
-  $("#cb").innerHTML=M===1
-   ?`<div class="cgrid" style="margin-top:14px">${order.map(card).join("")}</div>`
-   :series.map(s=>`<div class="sh"><b>${esc(s.t)}</b>${s.sub?`<span>${s.sub}</span>`:""}</div><div class="cgrid">${s.qs.map((x,i)=>card({...x,n:i+1})).join("")}</div>`).join("");
+  $("#cb").innerHTML=M===1?head+order.map(x=>row(x)).join(""):series.map(s=>`<div class="sh"><b>${esc(s.t)}</b>${s.sub?`<span>${s.sub}</span>`:""}</div>${head}${s.qs.map((x,i)=>row({...x,n:i+1})).join("")}`).join("");
   view("#corr");window.scrollTo(0,0);
 }
 $("#tog").onclick=()=>{const h=$("#cb").classList.toggle("noans");$("#tog").textContent=h?"Afficher les réponses":"Masquer les réponses (énoncés seuls)"};
@@ -1862,8 +1888,8 @@ $("#nxt").onclick=e=>{e.currentTarget.blur();next()};
 $("#pz").onclick=e=>{e.currentTarget.blur();pz()};
 $("#zp").onclick=e=>{e.currentTarget.blur();setZ(Z+.1)};
 $("#zm").onclick=e=>{e.currentTarget.blur();setZ(Z-.1)};
-$("#zv").onclick=()=>setZ(1);
-$("#quit").onclick=()=>{clearInterval(tm);view("#home")};
+$("#zv").onclick=$("#zv2").onclick=()=>setZ(1);$("#zp2").onclick=()=>setZ(Z+.1);$("#zm2").onclick=()=>setZ(Z-.1);
+$("#quit").onclick=()=>{cancelAnimationFrame(tm);view("#home")};
 $("#back").onclick=()=>view("#home");
 document.addEventListener("keydown",e=>{
   if($("#play").classList.contains("hidden"))return;
@@ -1872,7 +1898,7 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="+"||e.key==="="||e.key==="Add")setZ(Z+.1);
   else if(e.key==="-"||e.key==="_"||e.key==="Subtract")setZ(Z-.1);
   else if(e.key==="0")setZ(1);
-  else if(e.key==="Escape"){clearInterval(tm);view("#home")}
+  else if(e.key==="Escape"){cancelAnimationFrame(tm);view("#home")}
 });
 setZ(Z);
 view("#home");
