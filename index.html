@@ -79,8 +79,8 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 #chr{font:700 1.5rem var(--ui);font-variant-numeric:tabular-nums;background:#f4f4f4;border:1px solid #cfcfcf;border-radius:999px;padding:2px 16px}
 #ttl{font:600 1.15rem var(--serif)}#pg{font:600 1.3rem var(--ui);color:#111}#pg .sx{color:#777;font-weight:500;font-size:1rem}
 .tb{height:16px;border-radius:99px;background:#dbe4f5;overflow:hidden}#tf{height:100%;width:0;background:linear-gradient(90deg,#60a5fa,#2563eb 60%,#1d4ed8);border-radius:99px;will-change:width}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1}.g2.one .qc{grid-column:1/-1}
-.qc{position:relative;background:#fff;border:2px solid #111;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:84px 18px 26px;text-align:center;min-height:32vh}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1}.g2.one .qc{grid-column:1/-1}
+.qc{position:relative;background:transparent;border:0;border-radius:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:96px 32px 40px;text-align:center}
 .q{font:600 calc(clamp(1.7rem,4.6vw,3.8rem)*var(--z,1)*var(--f,1))/1.2 var(--ui);overflow-wrap:anywhere}
 .a{font:700 calc(clamp(1.7rem,4.4vw,3.3rem)*var(--z,1)) var(--ui);color:#0a7a3d;min-height:1.3em}
 .num{position:absolute;top:14px;left:18px;font:700 1.2rem var(--ui);color:#777}
@@ -138,11 +138,21 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 .side{font:700 .7rem var(--ui);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
 @media (max-width:760px){.pr{grid-template-columns:1fr}.crow .ca{grid-column:auto;border-left:0;padding:4px 0 0}}
 @media (max-width:700px){.g2{grid-template-columns:1fr}.q{font-size:calc(clamp(1.25rem,6vw,2rem)*var(--z,1)*var(--f,1))}.qc{min-height:20vh;padding-top:72px}.qc .num{top:12px}}
+#brand{cursor:pointer;user-select:none}#brand:hover{opacity:.85}
+.g2:not(.one) .qc:nth-child(2){border-left:2px solid #e2e2e2}
+@media (max-width:700px){.g2:not(.one) .qc:nth-child(2){border-left:0;border-top:2px solid #e2e2e2}}
+.lkt{margin-bottom:8px}
+.lk-card{max-width:880px;margin:5vh auto;text-align:center;padding:44px 28px 36px;background:var(--card);border:1px solid var(--bd);border-radius:28px;box-shadow:var(--sh)}
+.lk-date{font:700 .95rem var(--ui);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.lk-card .lk-title{font:600 clamp(2.4rem,7vw,5rem)/1.05 var(--serif);margin:14px 0 10px;color:var(--ink)}
+.lk-meta{color:var(--mut);margin-bottom:30px}
+.lk-btns{display:grid;gap:12px;max-width:520px;margin:0 auto}
+.lk-btns button{width:100%;font-size:1.2rem;padding:16px 24px}
 </style>
 </head>
 <body>
 <div id="top" class="wrap topbar">
-  <h1><span class="logo"><svg viewBox="0 0 44 44" role="img" aria-label="Automatismes"><rect width="44" height="44" rx="12" fill="var(--acc)"/><circle cx="22" cy="25" r="11" fill="none" stroke="var(--acc-ink)" stroke-width="3"/><rect x="18.5" y="7" width="7" height="3.6" rx="1.8" fill="var(--acc-ink)"/><path d="M22 25V18.5" stroke="var(--acc-ink)" stroke-width="3" stroke-linecap="round"/><path d="M22 25l4.6 3.2" stroke="#ffd76a" stroke-width="3" stroke-linecap="round"/></svg></span>Automatismes</h1><span class="grow"></span>
+  <h1 id="brand" role="link" tabindex="0" title="Retour à l’accueil"><span class="logo"><svg viewBox="0 0 44 44" role="img" aria-label="Automatismes"><rect width="44" height="44" rx="12" fill="var(--acc)"/><circle cx="22" cy="25" r="11" fill="none" stroke="var(--acc-ink)" stroke-width="3"/><rect x="18.5" y="7" width="7" height="3.6" rx="1.8" fill="var(--acc-ink)"/><path d="M22 25V18.5" stroke="var(--acc-ink)" stroke-width="3" stroke-linecap="round"/><path d="M22 25l4.6 3.2" stroke="#ffd76a" stroke-width="3" stroke-linecap="round"/></svg></span>Automatismes</h1><span class="grow"></span>
   <div class="tabs"><button id="tl" class="on">Choisir les questions</button><button id="tc">Créer mes questions</button></div>
 </div>
 
@@ -165,6 +175,13 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
     <p><button id="exp">Exporter</button> <button id="imp">Importer</button></p>
   </details>
 </div>
+
+<div id="launch" class="wrap hidden"><div class="lk-card">
+  <div class="lk-date" id="lkdate"></div>
+  <h2 class="lk-title" id="lktitle"></h2>
+  <div class="lk-meta" id="lkmeta"></div>
+  <div class="lk-btns"><button class="p" id="lkgo">▶ Lancer le diaporama tout de suite</button><button id="lkopen">Ouvrir le panier dans le site</button></div>
+</div></div>
 
 <div id="play" class="hidden">
   <div class="bar"><span id="chr">00:00</span><span id="ttl" class="grow"></span><span id="pg" class="mut"></span><span class="zg"><button id="zm" title="Réduire l’affichage (touche -)" aria-label="Réduire">A−</button><span id="zv" title="Cliquer pour revenir à 100 %">100 %</span><button id="zp" title="Agrandir l’affichage (touche +)" aria-label="Agrandir">A+</button></span><button id="pz">Pause</button><button id="quit">Quitter</button></div>
@@ -1630,7 +1647,7 @@ const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 
 /* ---- État ---- */
 const KEY="calculmental-v4";
-let cid=1,C=[],S={},D=2,M=0,CD=3,Z=1,LVK="6",Q="";
+let cid=1,C=[],S={},D=2,M=0,CD=3,Z=1,LT="",LVK="6",Q="";
 const CID=id=>/^c\d+$/.test(id);
 const pk=k=>{const j=k.indexOf("|");return j<0?[k,-1]:[k.slice(0,j),+k.slice(j+1)]};
 const sid=(u,i)=>CID(u)?u:u+"|"+i;
@@ -1711,17 +1728,17 @@ function drawPanier(){
   <div class="mode"><span>Affichage :</span>${rad("d",1,"1 question",D===1)}${rad("d",2,"2 questions",D===2)}</div>
   <div class="mode" style="margin-top:6px"><span>Ordre :</span>${rad("m",0,"Dans l’ordre",M===0)}${rad("m",1,"Mélangé",M===1)}</div>
   <div class="cdrow"><span>Décompte avant les questions :</span><input type="number" id="cd" min="0" max="30" value="${CD}"> s</div>
-  <p class="mut" style="font-size:.8rem;margin:8px 0 0">Temps 0 = passage manuel (Espace). Avec 2 questions affichées, celle de gauche et celle de droite portent le même numéro (une par élève) : « Questions » = nombre de numéros. Le décompte (0 = aucun) suit chaque exemple ; en mode mélangé, les exemples passent d’abord, puis les questions sont tirées dans le désordre.</p>
+  <p class="mut" style="font-size:.8rem;margin:8px 0 0">Temps 0 = passage manuel (Espace). Avec 2 questions affichées, celle de gauche et celle de droite portent le même numéro (une par élève) : « Questions » = nombre de numéros. Les exemples passent d’abord (série 1, série 2…), puis le décompte (0 = aucun), puis toutes les questions, dans l’ordre ou mélangées.</p>
   ${ids.length?ids.map(id=>{const o=opt(id);return `<div class="pi" data-id="${esc(id)}"><div class="head2"><b>${esc(title(id))}</b><button data-a="up" title="Monter">↑</button><button data-a="down" title="Descendre">↓</button><button data-a="del" title="Retirer">✕</button></div>
    <div class="mut" style="font-size:.82rem;margin-bottom:6px">${optName(id)}</div>
    <div class="prow"><label>Questions<input type="number" min="1" max="60" data-f="n" value="${o.n}"></label><label>Temps par question (s)<input type="number" min="0" max="600" data-f="t" value="${o.t}"></label></div>
    <label class="chk"><input type="checkbox" data-f="ex" ${o.ex?"checked":""}> Exemple avant la série</label></div>`}).join(""):'<p class="mut">Ouvre une activité dans la liste et coche un ou plusieurs types de questions : chaque case devient une ligne réglable du panier.</p>'}
   <div class="pf"><span class="mut" id="ptot"></span><span class="grow"></span><button id="clr">Vider</button><button class="p big" id="go" ${ids.length?"":"disabled"}>Démarrer</button></div>
-  ${ids.length?`<div class="share"><button id="lk">🔗 Créer un lien vers ce panier</button><div id="lkbox" class="hidden"><div class="lkrow"><input id="lkurl" readonly aria-label="Lien du panier"><button id="lkcp">Copier</button></div></div><div id="lkmsg"></div></div>`:""}`;
+  ${ids.length?`<div class="share"><input id="lkt" class="lkt" maxlength="80" placeholder="Titre du lien (ex. Rituel du ${dm()})" value="${esc(LT)}" aria-label="Titre du lien"><button id="lk">🔗 Créer un lien vers ce panier</button><div id="lkbox" class="hidden"><div class="lkrow"><input id="lkurl" readonly aria-label="Lien du panier"><button id="lkcp">Copier</button></div></div><div id="lkmsg"></div></div>`:""}`;
   tot();
 }
 $("#panier").addEventListener("input",e=>{
-  const el=e.target;if(el.id==="cd"){CD=Math.max(0,Math.min(30,+el.value||0));save();return}if(el.name==="d"){D=+el.value;save();return}if(el.name==="m"){M=+el.value;save();return}
+  const el=e.target;if(el.id==="lkt"){LT=el.value;return}if(el.id==="cd"){CD=Math.max(0,Math.min(30,+el.value||0));save();return}if(el.name==="d"){D=+el.value;save();return}if(el.name==="m"){M=+el.value;save();return}
   const id=el.closest(".pi")?.dataset.id,f=el.dataset.f;if(!id||!f||!S[id])return;
   S[id][f]=el.type==="checkbox"?el.checked:Math.max(f==="n"?1:0,Math.min(f==="n"?60:600,+el.value||0));
   save();tot()});
@@ -1763,13 +1780,14 @@ function toast(m){const t=document.createElement("div");t.className="toast";t.te
 function packLink(){
   const ids=Object.keys(S).filter(exists);
   const cu=[...new Set(ids.filter(CID))].map(id=>C.find(c=>c.id===id)).map(c=>[c.id,c.l,c.q,c.v,c.c,c.a]);
-  const o={s:ids.map(k=>{const p=opt(k);return[k.replace(".json",""),p.n,p.t,p.ex?1:0]}),d:D,m:M,cd:CD};
+  const o={s:ids.map(k=>{const p=opt(k);return[k.replace(".json",""),p.n,p.t,p.ex?1:0]}),d:D,m:M,cd:CD,t:((LT||"").trim()||("Rituel du "+dm())).slice(0,80)};
   if(cu.length)o.c=cu;
   return location.href.split("#")[0]+"#p="+b64(JSON.stringify(o));
 }
-function loadLink(h){
+function loadLink(h){try{return loadObj(JSON.parse(unb64(h.slice(3))))}catch(e){return -1}}
+function loadObj(o){
   try{
-    const o=JSON.parse(unb64(h.slice(3))),map={};
+    const map={};
     (o.c||[]).forEach(([id,l,q,v,c,a])=>{let x=C.find(y=>y.l===l&&y.q===q&&y.v===v&&y.c===c&&y.a===a);if(!x){x=normC({l,q,v,c,a});C.push(x)}map[id]=x.id});
     const ns={};
     (o.s||[]).forEach(([k,n,t,e])=>{
@@ -1788,8 +1806,23 @@ function mkLink(){
 }
 function cpLink(){const u=$("#lkurl").value;copyTxt(u).then(ok=>{$("#lkmsg").textContent=ok?"Lien copié ✓":"Copie impossible : sélectionne le lien et fais Ctrl+C."})}
 const loaded=n=>n>=0&&toast("Panier chargé depuis le lien : "+n+" ligne"+(n>1?"s":""));
-if(location.hash.startsWith("#p="))setTimeout(()=>loaded(Object.keys(S).length),300),loadLink(location.hash);
-window.addEventListener("hashchange",()=>{if(location.hash.startsWith("#p=")){const n=loadLink(location.hash);view("#home");loaded(n)}});
+const dm=()=>{const d=new Date();return (d.getDate()===1?"1er":d.getDate())+" "+d.toLocaleDateString("fr-FR",{month:"long"})};
+const fullDate=()=>{const t=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});return t.charAt(0).toUpperCase()+t.slice(1)};
+let pend=null;
+function showLaunch(o){
+  pend=o;const nl=o.s.length,nq=o.s.reduce((t,x)=>t+(+x[1]||0),0);
+  $("#lkdate").textContent=fullDate();
+  $("#lktitle").textContent=(o.t&&String(o.t).trim())||("Rituel du "+dm());
+  $("#lkmeta").textContent=nl+" ligne"+(nl>1?"s":"")+" · "+nq+" question"+(nq>1?"s":"")+" · "+(o.d===1?"1 question":"2 questions")+" à l’écran"+(o.m===1?" · mélangées":"");
+  view("#launch");
+}
+function checkHash(){
+  if(location.hash.startsWith("#p=")){try{const o=JSON.parse(unb64(location.hash.slice(3)));if(o&&Array.isArray(o.s)&&o.s.length){showLaunch(o);return true}}catch(e){}}
+  return false;
+}
+window.addEventListener("hashchange",checkHash);
+$("#lkgo").onclick=()=>{if(!pend)return;if(loadObj(pend)<=0){toast("Ce lien ne contient aucune question valable.");return}begin()};
+$("#lkopen").onclick=()=>{if(!pend)return;const n=loadObj(pend);view("#home");loaded(n)};
 
 /* ---- Séance ---- */
 let steps=[],si=0,series=[],t0=0,tm=null,end=0,paused=false,pAt=0,order=[];
@@ -1797,11 +1830,12 @@ const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i
 const pad=n=>String(n).padStart(2,"0"),dur=()=>{const s=Math.floor((Date.now()-t0)/1000);return pad(Math.floor(s/60))+":"+pad(s%60)};
 function setZ(z){Z=Math.max(.4,Math.min(3,Math.round(z*10)/10));document.documentElement.style.setProperty("--z",Z);$("#zv").textContent=$("#zv2").textContent=Math.round(Z*100)+" %";save()}
 function view(id){
-  ["#home","#custom","#play","#corr"].forEach(x=>$(x).classList.toggle("hidden",x!==id));
-  $("#top").classList.toggle("hidden",id==="#play"||id==="#corr");
+  ["#home","#custom","#launch","#play","#corr"].forEach(x=>$(x).classList.toggle("hidden",x!==id));
+  $("#top").classList.toggle("hidden",id==="#play");
   $("#tl").classList.toggle("on",id==="#home");$("#tc").classList.toggle("on",id==="#custom");
   if(id==="#home")drawLib();if(id==="#custom")drawC();
 }
+$("#brand").onclick=()=>{view("#home");window.scrollTo(0,0)};$("#brand").onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#brand").click()}};
 $("#tl").onclick=()=>view("#home");$("#tc").onclick=()=>view("#custom");
 function buildSeries(k){
   const o=opt(k),N=o.n*D;
@@ -1826,13 +1860,9 @@ function begin(){
   const exStep=s=>({k:"ex",ex:s.ex,title:"",pg:""});
   const cdStep=()=>{if(CD>0)steps.push({k:"cd",title:"",pg:"",len:CD*1000})};
   const unitStep=u=>{n++;const items=u.items.map(x=>({...x,n}));order.push({n,items});steps.push({k:"qs",items,title:"",len:u.sec>0?u.sec*1000:0,pg:pgq(n,total)})};
-  if(M===1){
-    series.forEach(s=>{if(s.ex)steps.push(exStep(s))});
-    cdStep();
-    shuf(all.flat()).forEach(unitStep);
-  }else{
-    series.forEach((s,k)=>{if(s.ex)steps.push(exStep(s));if(s.ex||k===0)cdStep();all[k].forEach(unitStep)});
-  }
+  series.forEach(s=>{if(s.ex)steps.push(exStep(s))});
+  cdStep();
+  (M===1?shuf(all.flat()):all.flat()).forEach(unitStep);
   si=0;paused=false;$("#pz").textContent="Pause";view("#play");t0=Date.now();cancelAnimationFrame(tm);const lp=()=>{tick();tm=requestAnimationFrame(lp)};tm=requestAnimationFrame(lp);showStep();
 }
 function showStep(){
@@ -1905,7 +1935,7 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="Escape"){cancelAnimationFrame(tm);view("#home")}
 });
 setZ(Z);
-view("#home");
+if(!checkHash())view("#home");
 </script>
 <div class="credit">Activités et moteur de génération : <a href="https://mathsmentales.net" target="_blank" rel="noopener">MathsMentales</a> de Sébastien Cogez (licence Apache 2.0). Rendu mathématique : KaTeX (MIT).</div>
 </body>
