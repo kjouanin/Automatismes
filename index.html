@@ -166,6 +166,10 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 .lk-meta{font:700 clamp(1.8rem,4.6vw,3.6rem) var(--ui);color:var(--acc);margin:0 0 clamp(28px,7vh,72px)}
 .lk-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:20px;max-width:1300px;margin:0 auto}
 .lk-btns button{font-size:clamp(1.3rem,2.4vw,2rem);padding:clamp(20px,4vh,38px) 24px;border-radius:24px;width:100%}
+.tb2{border-collapse:collapse;margin:10px auto 0;font-size:.42em;line-height:1.3}.tb2 th,.tb2 td{border:1.5px solid #555;padding:4px 12px;text-align:center}.tb2 th{background:#f1f1f1;font-weight:700}
+.gr{display:block;margin:10px auto 0;width:min(100%,46vh);max-width:100%;height:auto}
+.ex .gr{width:min(100%,220px);margin:6px 0}.ex .tb2{font-size:.85em;margin:6px 0}
+@media (max-width:700px){.gr{width:min(100%,60vw)}}
 </style>
 </head>
 <body>
@@ -1614,7 +1618,7 @@ function mk(u,sel,n){const a=new MMActivity(JSON.parse(JSON.stringify(DB.acts[u]
 const nzf=x=>String(x).replace(/\\color\{[^}]*\}/g,"").replace(/[\s{}]/g,"");
 const pcs=q=>String(q).replace(/\\text\{[^}]*\}/g,"|").replace(/\\(begin|end)\{[a-z*]+\}(\{[^}]*\})?/g,"|").replace(/\\\\/g,"|").replace(/\\(quad|qquad|footnotesize)/g,"|").split("|").map(nzf).filter(x=>x.length>1);
 function shq(act,v,fx){
-  const s=String(v==null?"":v);
+  const s=String(v==null?"":v).replace(/⟪raw:[^⟫]*⟫/g,"");
   if(act.type==="text"){
     const m=[...s.matchAll(/\$\$([^$]*)\$\$/g)].map(x=>x[1]).filter(x=>x.trim()!=="(u_n)");
     if(m.length)return{html:kx(fx(m.join("\\quad;\\quad "))),pieces:m.flatMap(pcs)};
@@ -1675,9 +1679,234 @@ const BI={
 (()=>{const ents=Object.keys(BI).map(id=>[id,BI[id].title,BI[id].d]);
  ["G","T"].forEach(k=>{const L=DB.lv.find(l=>l.k===k);if(L)L.th.push({k:"SUI",n:"Suites numériques",ch:[{k:"SUI1",n:"Calcul de termes",e:ents.slice(0,2)},{k:"SUI2",n:"Arithmétiques et géométriques",e:ents.slice(2,4)},{k:"SUI3",n:"Sens de variation",e:ents.slice(4)}]})})})();
 const fixm=m=>m.replace(/⟦/g,"{").replace(/⟧/g,"}").replace(/(\d),(\d)/g,"$1{,}$2");
-const bt=s=>segs(s,m=>kx(fixm(m)),esc);
+const bt=s=>segs(s,m=>kx(fixm(m)),esc).replace(/⟪raw:([^⟫]*)⟫/g,(m,e)=>decodeURIComponent(e));
 function bq(u,i){const r=gen(BI[u].types[i],new Set());return{q:bt(r.q),a:bt(r.a)}}
-function bgq(u,i,n){const t=BI[u].types[i],seen=new Set(),r=[],uf=s=>s.replace(/⟦/g,"{").replace(/⟧/g,"}");for(let k=0;k<n;k++){const x=gen(t,seen),h=shq({type:"text"},uf(x.q),fixm),na=nzf(uf(x.a)),dup=h.pieces.length>0&&h.pieces.every(p=>na.includes(p));r.push({q:bt(x.q),a:bt(x.a),m:dup?2:0,cq:h.html,len:x.q.replace(/<[^>]*>|\$\$/g,"").length})}return r}
+function bgq(u,i,n){const t=BI[u].types[i],seen=new Set(),r=[],uf=s=>s.replace(/⟦/g,"{").replace(/⟧/g,"}");for(let k=0;k<n;k++){const x=gen(t,seen),h=shq({type:"text"},uf(x.q),fixm),na=nzf(uf(x.a)),dup=h.pieces.length>0&&h.pieces.every(p=>na.includes(p));r.push({q:bt(x.q),a:bt(x.a),m:dup?2:0,cq:h.html,len:x.q.replace(/⟪raw:[^⟫]*⟫/g,"").replace(/<[^>]*>|\$\$/g,"").length})}return r}
+
+/* ---- Automatismes du programme officiel 2026 : générateurs complémentaires ---- */
+const FR=n=>String(Math.round(n*1e6)/1e6).replace(".",",").replace(/^-/,"−");
+const RAWM=h=>"⟪raw:"+encodeURIComponent(h)+"⟫";
+const unraw=s=>s.replace(/⟪raw:([^⟫]*)⟫/g,(m,e)=>decodeURIComponent(e));
+const mb32=s=>()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const ri2=(r,a,b)=>a+Math.floor(r()*(b-a+1));
+const comp=(r,N,k)=>{const a=Array(k).fill(1);for(let i=0;i<N-k;i++)a[Math.floor(r()*k)]++;return a};
+const CACHE={},memo=(k,f)=>CACHE[k]||(CACHE[k]=f());
+const BCN=["Foot","Judo","Danse","Tennis","Natation"],PCN=["Bus","Vélo","À pied","Voiture","Métro"];
+const PH=[["I","U=RI","I=\\dfrac{U}{R}"],["t","v=\\dfrac{d}{t}","t=\\dfrac{d}{v}"],["m","E=mgh","m=\\dfrac{E}{gh}"],["R","P=RI^2","R=\\dfrac{P}{I^2}"],["h","V=\\pi r^2h","h=\\dfrac{V}{\\pi r^2}"],["b","A=\\dfrac{(a+b)h}{2}","b=\\dfrac{2A}{h}-a"]];
+const PHR=["la probabilité de B sachant A","la probabilité que A et B soient réalisés","parmi les éléments de B, la proportion de ceux qui sont dans A"],PHN=["P_⟦A⟧(B)","P(A\\cap B)","P_⟦B⟧(A)"];
+function cdat(seed,kind){return memo("c"+seed+"_"+kind,()=>{
+  const r=mb32(seed*7919+kind*104729),pick=(p,n)=>{p=p.slice();while(p.length>n)p.splice(Math.floor(r()*p.length),1);return p};
+  if(kind===1)return pick([-5,-4,-3,-2,-1,0,1,2,3,4,5],9);
+  if(kind===3){const kn=3+Math.floor(r()*3);return[...pick([-5,-4,-3,-2,-1],kn),0,...pick([1,2,3,4,5],8-kn)]}
+  const t=1+Math.floor(r()*7),P=2+Math.floor(r()*4),lo=[];for(let v=-5;v<P;v++)lo.push(v);
+  const ys=[...pick(lo,t),P,...pick(lo,8-t).reverse()];return kind===2?ys:ys.map(y=>-y);
+})}
+const sdat=(seed,n)=>memo("s"+seed+"_"+n,()=>{const r=mb32(seed*31+n),v=[];let sum=0;for(let i=0;i<n-1;i++){const x=ri2(r,1,30);v.push(x);sum+=x}
+  let last=ri2(r,1,30);while((sum+last)%n!==0)last=last%30+1;v.push(last);
+  for(let i=v.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[v[i],v[j]]=[v[j],v[i]]}return v});
+const sedat=(seed,N)=>memo("e"+seed+"_"+N,()=>{const r=mb32(seed*53+N),vals=[];let v=ri2(r,4,8);for(let i=0;i<5;i++){vals.push(v);v+=ri2(r,1,3)}return{vals,eff:comp(r,N,5)}});
+const cldat=(seed,N)=>memo("k"+seed+"_"+N,()=>comp(mb32(seed*97+N),N,5));
+const bdat=(seed,T)=>memo("b"+seed+"_"+T,()=>comp(mb32(seed*17+T),20,5).map(k=>k*T/20));
+const pdat=seed=>memo("p"+seed,()=>comp(mb32(seed*13+5),20,5).map(k=>k*5));
+const bpd=seed=>memo("x"+seed,()=>{const r=mb32(seed*29+3),mk=()=>{let v=5*ri2(r,1,3);const a=[v];for(let i=0;i<4;i++){v+=5*ri2(r,1,2);a.push(v)}return a};return[mk(),mk()]});
+const SU=28,SO=160,sx=x=>SO+x*SU,sy=y=>SO-y*SU,sgnum=i=>i<0?"−"+(-i):String(i);
+function svgBase(inner){
+  let g='<svg class="gr" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="repère"><rect width="320" height="320" fill="#fff"/>';
+  for(let i=-5;i<=5;i++)g+=`<line x1="${sx(i)}" y1="${sy(-5.4)}" x2="${sx(i)}" y2="${sy(5.4)}" stroke="#e2e2e2"/><line x1="${sx(-5.4)}" y1="${sy(i)}" x2="${sx(5.4)}" y2="${sy(i)}" stroke="#e2e2e2"/>`;
+  g+=`<line x1="${sx(-5.5)}" y1="${SO}" x2="${sx(5.5)}" y2="${SO}" stroke="#111" stroke-width="2"/><line x1="${SO}" y1="${sy(-5.5)}" x2="${SO}" y2="${sy(5.5)}" stroke="#111" stroke-width="2"/>`;
+  for(let i=-5;i<=5;i++)if(i)g+=`<text x="${sx(i)}" y="${SO+13}" font-size="10" text-anchor="middle" fill="#444">${sgnum(i)}</text><text x="${SO-5}" y="${sy(i)+3.5}" font-size="10" text-anchor="end" fill="#444">${sgnum(i)}</text>`;
+  return g+inner+"</svg>";
+}
+function svgLine(a,b){
+  let x1=-5.4,x2=5.4;if(a!==0){const u=(-5.4-b)/a,v=(5.4-b)/a;x1=Math.max(-5.4,Math.min(u,v));x2=Math.min(5.4,Math.max(u,v))}
+  let s=`<line x1="${sx(x1)}" y1="${sy(a*x1+b)}" x2="${sx(x2)}" y2="${sy(a*x2+b)}" stroke="#1d4ed8" stroke-width="3" stroke-linecap="round"/>`;
+  [0,1].forEach(x=>{const y=a*x+b;if(Math.abs(y)<=5.2)s+=`<circle cx="${sx(x)}" cy="${sy(y)}" r="4" fill="#1d4ed8" stroke="#fff" stroke-width="1.5"/>`});
+  return svgBase(s);
+}
+function svgCurve(ys){
+  let s=`<polyline points="${ys.map((y,i)=>sx(i-4)+","+sy(y)).join(" ")}" fill="none" stroke="#1d4ed8" stroke-width="3" stroke-linejoin="round"/>`;
+  ys.forEach((y,i)=>{s+=`<circle cx="${sx(i-4)}" cy="${sy(y)}" r="3.6" fill="#1d4ed8"/>`});return svgBase(s);
+}
+function svgBars(v,u){
+  const W=330,H=250,L=44,Bt=40,Tp=12,PW=W-L-10,PHt=H-Bt-Tp,ym=Math.ceil(Math.max(...v)/(2*u))*2*u;
+  let g=`<svg class="gr" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="diagramme en barres"><rect width="${W}" height="${H}" fill="#fff"/>`;
+  for(let t=0;t<=ym;t+=2*u){const y=Tp+PHt-t/ym*PHt;g+=`<line x1="${L}" y1="${y}" x2="${W-10}" y2="${y}" stroke="#e2e2e2"/><text x="${L-5}" y="${y+3.5}" font-size="10" text-anchor="end" fill="#444">${t}</text>`}
+  g+=`<line x1="${L}" y1="${Tp}" x2="${L}" y2="${Tp+PHt}" stroke="#111" stroke-width="2"/><line x1="${L}" y1="${Tp+PHt}" x2="${W-10}" y2="${Tp+PHt}" stroke="#111" stroke-width="2"/>`;
+  const bw=PW/5;v.forEach((x,i)=>{const h=x/ym*PHt;g+=`<rect x="${L+i*bw+bw*.18}" y="${Tp+PHt-h}" width="${bw*.64}" height="${h}" fill="#1d4ed8"/><text x="${L+i*bw+bw/2}" y="${Tp+PHt+15}" font-size="10.5" text-anchor="middle" fill="#222">${BCN[i]}</text>`});
+  return g+"</svg>";
+}
+function svgPie(p){
+  const cx=180,cy=125,R=88,fill=["#1d4ed8","#60a5fa","#94a3b8","#334155","#cbd5e1"];let a0=-Math.PI/2;
+  let g='<svg class="gr" viewBox="0 0 360 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="diagramme circulaire"><rect width="360" height="250" fill="#fff"/>';
+  p.forEach((v,i)=>{const a1=a0+v/100*2*Math.PI,x0=cx+R*Math.cos(a0),y0=cy+R*Math.sin(a0),x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1),m=(a0+a1)/2;
+    g+=`<path d="M${cx},${cy} L${x0},${y0} A${R},${R} 0 ${v>50?1:0} 1 ${x1},${y1} Z" fill="${fill[i]}" stroke="#fff" stroke-width="2"/><text x="${cx+(R+12)*Math.cos(m)}" y="${cy+(R+12)*Math.sin(m)+3.5}" font-size="10.5" text-anchor="${Math.cos(m)>.2?"start":Math.cos(m)<-.2?"end":"middle"}" fill="#111">${PCN[i]} ${v} %</text>`;a0=a1});
+  return g+"</svg>";
+}
+function svgBox(d){
+  const W=340,L=34,PW=W-L-12,X=v=>L+v/60*PW;
+  let g=`<svg class="gr" viewBox="0 0 ${W} 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="boîtes à moustaches"><rect width="${W}" height="160" fill="#fff"/>`;
+  for(let t=0;t<=60;t+=5)g+=`<line x1="${X(t)}" y1="14" x2="${X(t)}" y2="122" stroke="${t%10?"#efefef":"#d9d9d9"}"/>`+(t%10?"":`<text x="${X(t)}" y="140" font-size="10" text-anchor="middle" fill="#444">${t}</text>`);
+  g+=`<line x1="${L}" y1="124" x2="${W-12}" y2="124" stroke="#111" stroke-width="2"/>`;
+  d.forEach((s,i)=>{const y=i?92:42,h=28;g+=`<text x="${L-8}" y="${y+4}" font-size="12" text-anchor="end" font-weight="700" fill="#111">${i?"B":"A"}</text><line x1="${X(s[0])}" y1="${y}" x2="${X(s[1])}" y2="${y}" stroke="#111" stroke-width="2"/><line x1="${X(s[3])}" y1="${y}" x2="${X(s[4])}" y2="${y}" stroke="#111" stroke-width="2"/><rect x="${X(s[1])}" y="${y-h/2}" width="${X(s[3])-X(s[1])}" height="${h}" fill="#dbe4f5" stroke="#111" stroke-width="2"/><line x1="${X(s[2])}" y1="${y-h/2}" x2="${X(s[2])}" y2="${y+h/2}" stroke="#1d4ed8" stroke-width="3"/><line x1="${X(s[0])}" y1="${y-7}" x2="${X(s[0])}" y2="${y+7}" stroke="#111" stroke-width="2"/><line x1="${X(s[4])}" y1="${y-7}" x2="${X(s[4])}" y2="${y+7}" stroke="#111" stroke-width="2"/>`});
+  return g+"</svg>";
+}
+const tbl=(head,rows)=>RAWM('<table class="tb2"><tr>'+head.map(h=>`<th>${h}</th>`).join("")+"</tr>"+rows.map(r=>"<tr>"+r.map((c,i)=>i?`<td>${c}</td>`:`<th>${c}</th>`).join("")+"</tr>").join("")+"</table>");
+Object.assign(FN,{
+ cmp:x=>x>0?"\\gt":x<0?"\\lt":"=",sup:a=>a>0?"\\gt":"\\lt",rac:(a,b)=>FR(-b/a),
+ sgn:x=>x>0?"strictement positive":x<0?"strictement négative":"nulle",oui:x=>x?"Oui":"Non",
+ augdim:x=>x>0?"augmenter":"diminuer",sv:x=>x>0?"augmente":"diminue",sh:x=>x>0?"hausse":"baisse",
+ axs:(a,b)=>{let s=(a===1?"":a===-1?"−":FR(a))+"x";if(b>0)s+="+"+FR(b);else if(b<0)s+="−"+FR(-b);return s},
+ op:k=>["\\lt","\\gt","\\leqslant","\\geqslant","="][k],
+ ineq:(a,b,c,k)=>{const o=a<0?[1,0,3,2][k]:k;return"x "+["\\lt","\\gt","\\leqslant","\\geqslant"][o]+" "+FR((c-b)/a)},
+ iv:(o,x)=>o===0?"[-4\\,;\\,"+FR(x)+"[":o===1?"]"+FR(x)+"\\,;\\,4]":o===2?"[-4\\,;\\,"+FR(x)+"]":o===3?"["+FR(x)+"\\,;\\,4]":"\\{"+FR(x)+"\\}",
+ phv:k=>PH[k-1][0],phf:k=>PH[k-1][1],pha:k=>PH[k-1][2],phr:w=>PHR[w-1],phn:w=>PHN[w-1],
+ fnx:(w,a,b)=>[0,FR(a)+"x",FR(a)+"x+"+FR(b),"x^2+"+FR(b),"\\dfrac{"+FR(a)+"}{x}",FR(a)+"x^2"][w],
+ fnat:w=>[0,"linéaire","affine (non linéaire)","ni linéaire ni affine","ni linéaire ni affine","ni linéaire ni affine"][w],
+ gl:(a,b)=>RAWM(svgLine(a,b)),cv:(s,k)=>RAWM(svgCurve(cdat(s,k))),cy:(s,k,x)=>cdat(s,k)[x+4],cx:(s,k,y)=>cdat(s,k).indexOf(y)-4,
+ cpk:(s,k)=>{const d=cdat(s,k);return d.indexOf(k===2?Math.max(...d):Math.min(...d))-4},cpv:(s,k)=>{const d=cdat(s,k);return k===2?Math.max(...d):Math.min(...d)},
+ lst:(s,n)=>sdat(s,n).join(" ; "),
+ qq:(s,n,i)=>{const d=sdat(s,n),t=d.slice().sort((a,b)=>a-b),N=t.length,q1=t[Math.ceil(N/4)-1],q3=t[Math.ceil(3*N/4)-1];return[d.reduce((a,b)=>a+b,0)/N,N%2?t[(N-1)/2]:(t[N/2-1]+t[N/2])/2,q1,q3,t[N-1]-t[0],q3-q1][i]},
+ setab:(s,N)=>{const d=sedat(s,N);return tbl(["Valeur",...d.vals],[["Effectif",...d.eff]])},
+ semoy:(s,N)=>{const d=sedat(s,N);return d.vals.reduce((a,v,i)=>a+v*d.eff[i],0)/N},
+ semed:(s,N)=>{const d=sedat(s,N),t=[];d.vals.forEach((v,i)=>{for(let j=0;j<d.eff[i];j++)t.push(v)});return(t[N/2-1]+t[N/2])/2},
+ clst:(s,N)=>tbl(["Classe","[0 ; 10[","[10 ; 20[","[20 ; 30[","[30 ; 40[","[40 ; 50["],[["Effectif",...cldat(s,N)]]),
+ clsm:(s,N)=>cldat(s,N).reduce((a,e,i)=>a+e*(5+10*i),0)/N,
+ clsmed:(s,N)=>{const e=cldat(s,N);let c=0;for(let i=0;i<5;i++){c+=e[i];if(c>=N/2)return"["+10*i+" ; "+(10*i+10)+"["}},
+ bcn:i=>BCN[i-1],bcd:(s,T,i)=>bdat(s,T)[i-1],bcv:(s,T)=>RAWM(svgBars(bdat(s,T),T/20)),
+ pcn:i=>PCN[i-1],pcd:(s,i)=>pdat(s)[i-1],pcv:s=>RAWM(svgPie(pdat(s))),
+ bpg:s=>RAWM(svgBox(bpd(s))),bpv:(s,k,i)=>bpd(s)[k][i],bpn:k=>k?"B":"A",bps:i=>["le minimum","le premier quartile","la médiane","le troisième quartile","le maximum"][i],
+ bpm:s=>{const d=bpd(s);return d[0][2]===d[1][2]?"égales":d[0][2]>d[1][2]?"A":"B"},
+ bpiq:s=>{const d=bpd(s),a=d[0][3]-d[0][1],b=d[1][3]-d[1][1];return a===b?"égaux":a>b?"A":"B"},
+ tab4:(a,b,c,d)=>tbl(["","B","non B","Total"],[["A",a,b,a+b],["non A",c,d,c+d],["Total",a+c,b+d,a+b+c+d]])
+});
+Object.assign(BI,{
+ au_cmp:{title:"Comparer deux nombres",d:"par la différence ou par le quotient",types:[
+  B("Par la différence (fractions)","Comparer $$\\dfrac⟦{p}⟧⟦{q}⟧$$ et $$\\dfrac⟦{r}⟧⟦{s}⟧$$ en étudiant le signe de leur différence.","p: 1..9\nq: 2..9\nr: 1..9\ns: 2..9","$$\\dfrac⟦{p}⟧⟦{q}⟧-\\dfrac⟦{r}⟧⟦{s}⟧=\\dfrac⟦{p*s-r*q}⟧⟦{q*s}⟧$$ donc $$\\dfrac⟦{p}⟧⟦{q}⟧ {cmp(p*s-r*q)} \\dfrac⟦{r}⟧⟦{s}⟧$$","p*s!=r*q"),
+  B("Par le quotient (nombres positifs)","Comparer $${a}$$ et $${b}$$ en étudiant leur quotient $$\\dfrac⟦{a}⟧⟦{b}⟧$$.","a: 3..40\nb: 3..40","$$\\dfrac⟦{a}⟧⟦{b}⟧ {cmp(a-b)} 1$$ donc $${a} {cmp(a-b)} {b}$$","a!=b")]},
+ au_ecr:{title:"Changer d’écriture d’un nombre",d:"décimale, fractionnaire, pourcentage, scientifique",types:[
+  B("Fraction → décimal → pourcentage","Écrire $$\\dfrac⟦{p}⟧⟦{q}⟧$$ sous forme décimale puis en pourcentage.","q: 2,4,5,8,10,20,25,50\np: 1..49","$$\\dfrac⟦{p}⟧⟦{q}⟧={p/q}={p/q*100}\\,\\%$$","p<q"),
+  B("Pourcentage → fraction irréductible","Écrire $${p}\\,\\%$$ sous forme de fraction irréductible.","p: 5,10,15,20,25,30,40,45,60,75,80,90","$${p}\\,\\%=\\dfrac⟦{p/gcd(p,100)}⟧⟦{100/gcd(p,100)}⟧$$"),
+  B("Décimal → pourcentage","Écrire $${d}$$ sous forme de pourcentage.","d: 1..99 /100","$${d}={d*100}\\,\\%$$"),
+  B("Écriture scientifique → décimale","Écrire $${m}\\times10^⟦{e}⟧$$ sous forme décimale.","m: 11..99 /10\ne: -5,-4,-3,-2,-1,2,3,4,5,6","$${m}\\times10^⟦{e}⟧={m*10^e}$$"),
+  B("Écriture décimale → scientifique","Écrire $${m*10^e}$$ en notation scientifique.","m: 11..99 /10\ne: -5,-4,-3,-2,-1,2,3,4,5,6","$${m*10^e}={m}\\times10^⟦{e}⟧$$")]},
+ au_ord:{title:"Ordre de grandeur et vraisemblance",d:"estimer, contrôler un résultat",types:[
+  B("Ordre de grandeur d’un produit","Donner un ordre de grandeur de $${a}\\times{b}$$.","a: 21..98 /10\nb: 121..989 /10","$$\\approx {round(a)}\\times{round(b/10)*10}={round(a)*round(b/10)*10}$$"),
+  B("Ordre de grandeur d’un quotient","Donner un ordre de grandeur de $${n*k+e}\\div{k+d}$$.","k: 2..9\nn: 5..90\ne: -3..3\nd: -0.1,0,0.1","$$\\approx\\dfrac⟦{n*k}⟧⟦{k}⟧={n}$$"),
+  B("Un résultat est-il vraisemblable ?","Un élève trouve $${round(a*b)*f}$$ pour $${a}\\times{b}$$. Ce résultat est-il vraisemblable ?","a: 21..98 /10\nb: 21..98 /10\nf: 1,1,10,0.1","{oui(f==1)}")]},
+ au_uni:{title:"Conversions d’unités",d:"aires, volumes, vitesses",types:[
+  B("Aires : m² → cm²","$${a}\\ \\text⟦m⟧^2=\\ldots\\ \\text⟦cm⟧^2$$","a: 2..99 /10","$${a*10000}\\ \\text⟦cm⟧^2$$"),
+  B("Aires : cm² → mm²","$${a}\\ \\text⟦cm⟧^2=\\ldots\\ \\text⟦mm⟧^2$$","a: 11..99 /10","$${a*100}\\ \\text⟦mm⟧^2$$"),
+  B("Aires : dm² → m²","$${a}\\ \\text⟦dm⟧^2=\\ldots\\ \\text⟦m⟧^2$$","a: 100..9999 /10","$${a/100}\\ \\text⟦m⟧^2$$"),
+  B("Volumes : m³ → L","$${a}\\ \\text⟦m⟧^3=\\ldots\\ \\text⟦L⟧$$","a: 2..99 /10","$${a*1000}\\ \\text⟦L⟧$$"),
+  B("Volumes : L → cm³","$${a}\\ \\text⟦L⟧=\\ldots\\ \\text⟦cm⟧^3$$","a: 2..99 /10","$${a*1000}\\ \\text⟦cm⟧^3$$"),
+  B("Vitesses : km/h → m/s","$${v}\\ \\text⟦km/h⟧=\\ldots\\ \\text⟦m/s⟧$$","v: 18,36,54,72,90,108,126,144,162,180","$${v/3.6}\\ \\text⟦m/s⟧$$"),
+  B("Vitesses : m/s → km/h","$${v}\\ \\text⟦m/s⟧=\\ldots\\ \\text⟦km/h⟧$$","v: 5..40","$${v*3.6}\\ \\text⟦km/h⟧$$")]},
+ au_lit:{title:"Calcul littéral élémentaire",d:"opposé, produit, inverse",types:[
+  B("Opposé d’une somme ou d’une différence","Simplifier $$-\\left({axs(a,b)}\\right)$$.","a: -5..5\nb: -9..9","$${axs(-a,-b)}$$","a!=0&&b!=0"),
+  B("Produit par −1","Simplifier $$(-1)\\times\\left({axs(a,b)}\\right)$$.","a: -5..5\nb: -9..9","$${axs(-a,-b)}$$","a!=0&&b!=0"),
+  B("Écrire x/a comme un produit","Écrire $$\\dfrac⟦x⟧⟦{a}⟧$$ sous la forme $$k\\times x$$.","a: 2..9","$$\\dfrac⟦x⟧⟦{a}⟧=\\dfrac⟦1⟧⟦{a}⟧\\times x$$"),
+  B("Inverse d’un inverse","Simplifier $$\\dfrac⟦1⟧⟦\\dfrac⟦1⟧⟦{a}⟧⟧$$.","a: 2..9","$${a}$$")]},
+ au_dev:{title:"Factoriser : cas simples",d:"ax² + bx, ax + b",types:[
+  B("Factoriser ax² + bx","Factoriser $${a}x^2{sg(b)}x$$.","a: 2..9\nb: -9..9","$$x\\left({axs(a,b)}\\right)$$","b!=0"),
+  B("Factoriser ax + b (facteur commun)","Factoriser $${a*c}x{sg(b*c)}$$.","a: 2..5\nb: -5..5\nc: 2..9","$${c}\\left({axs(a,b)}\\right)$$","b!=0")]},
+ au_eq:{title:"Équations et inéquations du premier degré",d:"a/x = b, inéquations",types:[
+  B("Équation a/x = b","Résoudre $$\\dfrac⟦{b*k}⟧⟦x⟧={b}$$ (avec $$x\\neq0$$).","b: 2..9\nk: 1..9","$$x={k}$$"),
+  B("Inéquation (a > 0)","Résoudre $${a}x{sg(b)}\\ {op(o)}\\ {a*x0+b}$$.","a: 2..9\nb: -9..9\nx0: -5..5\no: 0,1,2,3","$${ineq(a,b,a*x0+b,o)}$$","b!=0"),
+  B("Inéquation (a < 0)","Résoudre $${a}x{sg(b)}\\ {op(o)}\\ {a*x0+b}$$.","a: -9..-2\nb: -9..9\nx0: -5..5\no: 0,1,2,3","$${ineq(a,b,a*x0+b,o)}$$","b!=0")]},
+ au_iso:{title:"Isoler une variable",d:"formules des autres disciplines",types:[
+  B("Isoler x dans y = ax + b","Isoler $$x$$ dans $$y={axs(a,b)}$$.","a: 2..9\nb: -9..9","$$x=\\dfrac⟦y{sg(-b)}⟧⟦{a}⟧$$","b!=0"),
+  B("Isoler y dans ax + by = c","Isoler $$y$$ dans $${a}x+{b}y={c}$$.","a: 2..9\nb: 2..9\nc: 1..20","$$y=\\dfrac⟦{c}-{a}x⟧⟦{b}⟧$$"),
+  B("Formules de physique et de géométrie","Isoler $${phv(k)}$$ dans $${phf(k)}$$.","k: 1..6","$${pha(k)}$$")]},
+ au_app:{title:"Application numérique d’une formule",d:"physique, géométrie, conversions",types:[
+  B("Loi d’Ohm","On a $$R={R}\\ \\Omega$$ et $$I={I}\\ \\text⟦A⟧$$. Calculer $$U=R\\times I$$.","R: 5..60\nI: 2..9","$$U={R*I}\\ \\text⟦V⟧$$"),
+  B("Vitesse moyenne","Un trajet de $${v*t}$$ km dure $${t}$$ h. Calculer la vitesse moyenne.","v: 30..110\nt: 2..6","$$v=\\dfrac⟦{v*t}⟧⟦{t}⟧={v}\\ \\text⟦km/h⟧$$"),
+  B("Aire d’un disque","Calculer l’aire d’un disque de rayon $${r}$$ cm (avec $$\\pi\\approx3,14$$).","r: 2..10","$$\\mathcal⟦A⟧={3.14*r*r}\\ \\text⟦cm⟧^2$$"),
+  B("Volume d’un cylindre","Calculer le volume d’un cylindre de rayon $${r}$$ cm et de hauteur $${h}$$ cm (avec $$\\pi\\approx3,14$$).","r: 2..6\nh: 3..10","$$V={3.14*r*r*h}\\ \\text⟦cm⟧^3$$"),
+  B("Énergie cinétique","Calculer $$E_c=\\dfrac⟦1⟧⟦2⟧mv^2$$ pour $$m={2*mm}$$ kg et $$v={v}$$ m/s.","mm: 1..20\nv: 2..12","$$E_c={mm*v*v}\\ \\text⟦J⟧$$"),
+  B("Température en degrés Fahrenheit","Convertir $${c}\\,^\\circ\\text⟦C⟧$$ en degrés Fahrenheit avec $$F=1,8\\,c+32$$.","c: 0,5,10,15,20,25,30,35,40,100","$$F={1.8*c+32}$$")]},
+ au_sgn:{title:"Signe d’une expression",d:"premier degré, produit factorisé",types:[
+  B("Signe de ax + b pour une valeur de x","Donner le signe de $${axs(a,b)}$$ pour $$x={k}$$.","a: -5,-4,-2,-1,1,2,4,5\nb: -9..9\nk: -6..6","L’expression est {sgn(a*k+b)}.","b!=0"),
+  B("Signe de ax + b sur ℝ","Pour quelles valeurs de $$x$$ l’expression $${axs(a,b)}$$ est-elle strictement positive ?","a: -5,-4,-2,-1,1,2,4,5\nb: -9..9","$$x {sup(a)} {rac(a,b)}$$","b!=0"),
+  B("Signe d’un produit factorisé (une valeur)","Donner le signe de $$(x{sg(-r)})(x{sg(-s)})$$ pour $$x={k}$$.","r: -5..5\ns: -5..5\nk: -6..6","L’expression est {sgn((k-r)*(k-s))}.","r!=s&&r!=0&&s!=0&&k!=r&&k!=s"),
+  B("Produit factorisé : où est-il négatif ?","Pour quelles valeurs de $$x$$ a-t-on $$(x{sg(-r)})(x{sg(-s)})\\lt0$$ ?","r: -5..5\ns: -5..5","$${r}\\lt x\\lt{s}$$","r<s&&r!=0&&s!=0")]},
+ au_prop:{title:"Proportions",d:"proportion, tout et partie, proportion d’une proportion",types:[
+  B("Calculer une proportion en pourcentage","Dans une classe de $${t}$$ élèves, $${p}$$ sont demi-pensionnaires. Quelle proportion cela représente-t-il, en pourcentage ?","t: 20,25,40,50,80,100\np: 1..49","$$\\dfrac⟦{p}⟧⟦{t}⟧={p/t*100}\\,\\%$$","p<t"),
+  B("Retrouver le tout connaissant une partie","$${p*m/5}$$ personnes représentent $${p}\\,\\%$$ du total. Quel est le total ?","p: 5,10,20,25,40,50\nm: 2..20","$${20*m}$$"),
+  B("Proportion d’une proportion","$${p}\\,\\%$$ des élèves sont des filles et $${q}\\,\\%$$ des filles font du sport. Quelle proportion des élèves cela représente-t-il ?","p: 20,25,40,50,60\nq: 10,20,25,40,50","$${p*q/100}\\,\\%$$")]},
+ au_evo:{title:"Évolutions, taux, indices",d:"coefficient multiplicateur, taux réciproque, indice base 100",types:[
+  B("Hausse de t % → coefficient multiplicateur","Augmenter de $${t}\\,\\%$$ revient à multiplier par combien ?","t: 5,10,15,20,25,50","$${1+t/100}$$"),
+  B("Baisse de t % → coefficient multiplicateur","Diminuer de $${t}\\,\\%$$ revient à multiplier par combien ?","t: 5,10,15,20,25,50","$${1-t/100}$$"),
+  B("Coefficient multiplicateur → évolution","Multiplier par $${c}$$ revient à quelle évolution ?","c: 1.05,1.1,1.25,1.5,0.9,0.75,0.95,0.8","Cela revient à {augdim(c-1)} de $${round(abs(c-1)*100)}\\,\\%$$."),
+  B("Calculer une valeur finale","Un prix de $${p}$$ € {sv(s)} de $${t}\\,\\%$$. Quel est le nouveau prix ?","p: 20,40,50,80,100,200\nt: 10,20,25,50\ns: 1,-1","$${p*(1+s*t/100)}$$ €"),
+  B("Retrouver la valeur initiale","Après une {sh(s)} de $${t}\\,\\%$$, un prix est de $${p*(1+s*t/100)}$$ €. Quel était le prix initial ?","p: 20,40,50,80,100,200\nt: 10,20,25,50\ns: 1,-1","$${p}$$ €"),
+  B("Calculer un taux d’évolution","Un prix passe de $${a}$$ € à $${b}$$ €. Quel est le taux d’évolution ?","a: 20,40,50,80,100,200\nb: 10..300","$${(b-a)*100/a}\\,\\%$$","(b-a)*100%a==0&&b!=a"),
+  B("Évolutions successives","Une hausse de $${t1}\\,\\%$$ est suivie d’une baisse de $${t2}\\,\\%$$. Quel est le taux d’évolution global ?","t1: 10,20,25,50\nt2: 10,20,25,50","$$(1+{t1/100})\\times(1-{t2/100})={(1+t1/100)*(1-t2/100)}$$ soit $${(1+t1/100)*(1-t2/100)*100-100}\\,\\%$$"),
+  B("Taux réciproque après une hausse","Après une hausse de $${t}\\,\\%$$, quelle baisse (en pourcentage) permet de revenir à la valeur initiale ?","t: 25,100,150,300,400,900","$${100-100/(1+t/100)}\\,\\%$$"),
+  B("Taux réciproque après une baisse","Après une baisse de $${d}\\,\\%$$, quelle hausse (en pourcentage) permet de revenir à la valeur initiale ?","d: 20,50,60,75,80,90","$${100/(1-d/100)-100}\\,\\%$$"),
+  B("Interpréter un indice de base 100","L’indice d’une grandeur est $${i}$$ (base 100). Quelle évolution cela représente-t-il ?","i: 80,90,105,110,120,125,150,200","$${i-100}\\,\\%$$"),
+  B("Valeur déduite d’un indice","En 2020 (base 100), un prix est de $${v}$$ €. En 2024, l’indice vaut $${i}$$. Quel est le prix en 2024 ?","v: 20,40,50,80,100,150,200\ni: 80,90,105,110,120,125,150","$${v*i/100}$$ €"),
+  B("Calculer un indice","Un prix passe de $${a}$$ € (base 100) à $${b}$$ €. Quel est l’indice final ?","a: 20,40,50,80,100,200\nb: 10..300","$${b/a*100}$$","(b*100)%a==0"),
+  B("Taux d’évolution entre deux indices","Les indices valent $${i1}$$ puis $${i2}$$. Quel est le taux d’évolution ?","i1: 80,100,125,150,200\ni2: 60..260","$${(i2-i1)*100/i1}\\,\\%$$","(i2-i1)*100%i1==0&&i1!=i2")]},
+ au_fct:{title:"Fonctions : images, antécédents, droites",d:"calculs sur les fonctions affines",types:[
+  B("Calculer une image","Soit $$f(x)={axs(a,b)}$$. Calculer $$f({k})$$.","a: -5..5\nb: -9..9\nk: -5..5","$$f({k})={a*k+b}$$","a!=0&&b!=0"),
+  B("Calculer un antécédent","Soit $$f(x)={axs(a,b)}$$. Quel est l’antécédent de $${a*k+b}$$ ?","a: -5..5\nb: -9..9\nk: -5..5","$$x={k}$$","a!=0&&b!=0"),
+  B("Un point appartient-il à la courbe ?","Soit $$f(x)={axs(a,b)}$$. Le point $$A({k}\\,;\\,{a*k+b+d})$$ appartient-il à la courbe de $$f$$ ?","a: -5..5\nb: -9..9\nk: -5..5\nd: 0,0,1,-2,3","{oui(d==0)}","a!=0&&b!=0"),
+  B("Ordonnée d’un point de la courbe","Le point $$A$$ d’abscisse $${k}$$ appartient à la courbe de $$f(x)={axs(a,b)}$$. Quelle est son ordonnée ?","a: -5..5\nb: -9..9\nk: -5..5","$${a*k+b}$$","a!=0&&b!=0"),
+  B("Linéaire, affine ou autre ?","La fonction $$f : x\\mapsto {fnx(w,a,b)}$$ est-elle linéaire, affine (non linéaire) ou ni l’une ni l’autre ?","w: 1,2,3,4,5\na: 2..9\nb: 1..9","{fnat(w)}"),
+  B("Coefficient directeur (deux points)","Soit $$A({x1}\\,;\\,{y1})$$ et $$B({x1+dx}\\,;\\,{y1+m*dx})$$. Quel est le coefficient directeur de $$(AB)$$ ?","x1: -5..5\ny1: -6..6\ndx: 1..5\nm: -4..4","$$\\dfrac⟦{m*dx}⟧⟦{dx}⟧={m}$$","m!=0"),
+  B("Coefficient directeur fractionnaire","Soit $$A({x1}\\,;\\,{y1})$$ et $$B({x1+q*d}\\,;\\,{y1+p*d})$$. Quel est le coefficient directeur de $$(AB)$$ ?","x1: -5..5\ny1: -6..6\nq: 2,3,4\np: -5..5\nd: 1,2","$$\\dfrac⟦{p*d}⟧⟦{q*d}⟧=\\dfrac⟦{p}⟧⟦{q}⟧$$","p!=0&&gcd(p,q)==1"),
+  B("Équation réduite : point et coefficient directeur","Droite de coefficient directeur $${m}$$ passant par $$A({x1}\\,;\\,{y1})$$. Quelle est son équation réduite ?","m: -4..4\nx1: -4..4\ny1: -6..6","$$y={axs(m,y1-m*x1)}$$","m!=0"),
+  B("Équation réduite : deux points","Soit $$A({x1}\\,;\\,{y1})$$ et $$B({x1+dx}\\,;\\,{y1+m*dx})$$. Quelle est l’équation réduite de $$(AB)$$ ?","x1: -4..4\ny1: -6..6\ndx: 1..4\nm: -4..4","$$y={axs(m,y1-m*x1)}$$","m!=0"),
+  B("Deux points pour tracer une droite","Donner deux points à placer pour tracer la droite d’équation $$y={axs(a,b)}$$.","a: -4..4\nb: -5..5","$$(0\\,;\\,{b})\\ \\text⟦et⟧\\ (1\\,;\\,{a+b})$$","a!=0")]},
+ au_gra:{title:"Lectures graphiques",d:"droite, courbe : images, antécédents, signe, variations",types:[
+  B("Lire l’équation réduite d’une droite","Lire l’équation réduite de la droite tracée. {gl(a,b)}","a: -3,-2,-1,1,2,3\nb: -4..4","$$y={axs(a,b)}$$","abs(a+b)<=5"),
+  B("Lire un coefficient directeur","Lire le coefficient directeur de la droite tracée. {gl(a,b)}","a: -3,-2,-1,1,2,3\nb: -4..4","$$m={a}$$","abs(a+b)<=5"),
+  B("Lire une image sur une courbe","Lire graphiquement l’image de $${x}$$ par $$f$$. {cv(seed,1)}","seed: 1..999\nx: -4..4","$$f({x})={cy(seed,1,x)}$$"),
+  B("Lire un antécédent sur une courbe","Lire graphiquement l’antécédent de $${cy(seed,1,x)}$$ par $$f$$. {cv(seed,1)}","seed: 1..999\nx: -4..4","$$x={x}$$"),
+  B("Résoudre graphiquement f(x) = k, f(x) < k…","Résoudre graphiquement $$f(x)\\ {op(o)}\\ {cy(seed,1,x)}$$ sur $$[-4\\,;\\,4]$$. {cv(seed,1)}","seed: 1..999\nx: -3..3\no: 0,1,2,3,4","$$S={iv(o,x)}$$"),
+  B("Signe d’une fonction (graphique)","Déterminer graphiquement le signe de $$f(x)$$ sur $$[-4\\,;\\,4]$$. {cv(seed,3)}","seed: 1..999","$$f(x)\\lt0$$ sur $$[-4\\,;\\,{cx(seed,3,0)}[$$ et $$f(x)\\gt0$$ sur $$]{cx(seed,3,0)}\\,;\\,4]$$"),
+  B("Variations et maximum (graphique)","Donner les variations de $$f$$ sur $$[-4\\,;\\,4]$$ et son maximum. {cv(seed,2)}","seed: 1..999","$$f$$ croît sur $$[-4\\,;\\,{cpk(seed,2)}]$$ puis décroît sur $$[{cpk(seed,2)}\\,;\\,4]$$ ; maximum $${cpv(seed,2)}$$ en $$x={cpk(seed,2)}$$."),
+  B("Variations et minimum (graphique)","Donner les variations de $$f$$ sur $$[-4\\,;\\,4]$$ et son minimum. {cv(seed,4)}","seed: 1..999","$$f$$ décroît sur $$[-4\\,;\\,{cpk(seed,4)}]$$ puis croît sur $$[{cpk(seed,4)}\\,;\\,4]$$ ; minimum $${cpv(seed,4)}$$ en $$x={cpk(seed,4)}$$.")]},
+ au_sta:{title:"Statistiques : lire et calculer",d:"graphiques, moyenne, médiane, quartiles",types:[
+  B("Lire un diagramme en barres","Quel est l’effectif de « {bcn(i)} » ? {bcv(seed,T)}","seed: 1..999\nT: 40,80,100,200\ni: 1..5","$${bcd(seed,T,i)}$$"),
+  B("Proportion d’après un diagramme en barres","L’effectif total est $${T}$$. Quelle proportion (en %) représente « {bcn(i)} » ? {bcv(seed,T)}","seed: 1..999\nT: 40,80,100,200\ni: 1..5","$$\\dfrac⟦{bcd(seed,T,i)}⟧⟦{T}⟧={bcd(seed,T,i)/T*100}\\,\\%$$"),
+  B("Lire un diagramme circulaire","Sur $${N}$$ élèves interrogés, combien utilisent « {pcn(i)} » ? {pcv(seed)}","seed: 1..999\nN: 20,40,60,80,100,120,160,200\ni: 1..5","$${pcd(seed,i)}\\,\\%\\times{N}={pcd(seed,i)*N/100}$$"),
+  B("Moyenne d’une série (données brutes)","Série : {lst(seed,n)}. Calculer la moyenne.","seed: 1..999\nn: 5,6,8,10","$$\\bar⟦x⟧={qq(seed,n,0)}$$"),
+  B("Médiane d’une série (données brutes)","Série : {lst(seed,n)}. Calculer la médiane.","seed: 1..999\nn: 5,6,7,8,9,10,11,12","$$\\text⟦Méd⟧={qq(seed,n,1)}$$"),
+  B("Quartiles d’une série (données brutes)","Série : {lst(seed,n)}. Calculer les quartiles $$Q_1$$ et $$Q_3$$.","seed: 1..999\nn: 7,8,9,10,11,12","$$Q_1={qq(seed,n,2)}\\ \\text⟦et⟧\\ Q_3={qq(seed,n,3)}$$"),
+  B("Étendue et écart interquartile","Série : {lst(seed,n)}. Calculer l’étendue et l’écart interquartile.","seed: 1..999\nn: 7,8,9,10,11,12","$$\\text⟦étendue⟧={qq(seed,n,4)}\\ ;\\ Q_3-Q_1={qq(seed,n,5)}$$"),
+  B("Moyenne d’une série à effectifs","{setab(seed,N)} Calculer la moyenne de cette série.","seed: 1..999\nN: 20,40,50","$$\\bar⟦x⟧={semoy(seed,N)}$$"),
+  B("Médiane d’une série à effectifs","{setab(seed,N)} Calculer la médiane de cette série.","seed: 1..999\nN: 20,40,50","$$\\text⟦Méd⟧={semed(seed,N)}$$"),
+  B("Moyenne d’une série en classes","{clst(seed,N)} Calculer la moyenne (en prenant les centres des classes).","seed: 1..999\nN: 20,40,50","$$\\bar⟦x⟧={clsm(seed,N)}$$"),
+  B("Classe médiane","{clst(seed,N)} Quelle est la classe médiane ?","seed: 1..999\nN: 20,40,50","$${clsmed(seed,N)}$$"),
+  B("Lire une boîte à moustaches","Lire {bps(j)} de la série {bpn(g)}. {bpg(seed)}","seed: 1..999\ng: 0,1\nj: 0,1,2,3,4","$${bpv(seed,g,j)}$$"),
+  B("Comparer deux distributions","Quelle série a la médiane la plus élevée ? Laquelle a le plus grand écart interquartile ? {bpg(seed)}","seed: 1..999","Médiane la plus élevée : série {bpm(seed)} ; plus grand écart interquartile : série {bpiq(seed)}.")]},
+ au_pro:{title:"Probabilités",d:"contraire, équiprobabilité, conditionnelles, arbres, tableaux",types:[
+  B("Une probabilité est-elle possible ?","Une probabilité peut-elle valoir $${x}$$ ?","x: 0.35,1.2,-0.1,0.9,1.5,0,1,-2,0.05,0.5","{oui(x>=0&&x<=1)}"),
+  B("Événement contraire","$$P(A)={p}$$. Calculer $$P(\\overline⟦A⟧)$$.","p: 0.05,0.1,0.15,0.2,0.25,0.35,0.4,0.65,0.8","$$P(\\overline⟦A⟧)=1-{p}={1-p}$$"),
+  B("Somme des probabilités des issues","Une loi a quatre issues : $$P(1)={p1}$$, $$P(2)={p2}$$, $$P(3)={p3}$$. Calculer $$P(4)$$ puis $$P(\\⟦2\\,;4\\⟧)$$.","p1: 0.1,0.15,0.2\np2: 0.1,0.2,0.25\np3: 0.1,0.15,0.3","$$P(4)={1-p1-p2-p3}$$ et $$P(\\⟦2\\,;4\\⟧)={p2+1-p1-p2-p3}$$"),
+  B("Équiprobabilité","Un dé équilibré à $${n}$$ faces est numéroté de 1 à $${n}$$. Quelle est la probabilité d’obtenir un multiple de $${m}$$ ?","n: 6,8,10,12,20\nm: 2,3,4,5","$$\\dfrac⟦{floor(n/m)}⟧⟦{n}⟧$$"),
+  B("Probabilité conditionnelle (tableau croisé)","On choisit un individu au hasard. Calculer $$P_A(B)$$. {tab4(a,b,c,d)}","a: 6..30\nb: 4..30\nc: 6..30\nd: 4..30","$$P_A(B)=\\dfrac⟦{a}⟧⟦{a+b}⟧$$"),
+  B("P(A ∩ B) (tableau croisé)","On choisit un individu au hasard. Calculer $$P(A\\cap B)$$. {tab4(a,b,c,d)}","a: 6..30\nb: 4..30\nc: 6..30\nd: 4..30","$$P(A\\cap B)=\\dfrac⟦{a}⟧⟦{a+b+c+d}⟧$$"),
+  B("P_B(A) (tableau croisé)","On choisit un individu au hasard. Calculer $$P_B(A)$$. {tab4(a,b,c,d)}","a: 6..30\nb: 4..30\nc: 6..30\nd: 4..30","$$P_B(A)=\\dfrac⟦{a}⟧⟦{a+c}⟧$$"),
+  B("Distinguer P(A ∩ B), P_A(B) et P_B(A)","Calculer $$P(A\\cap B)$$, $$P_A(B)$$ et $$P_B(A)$$. {tab4(a,b,c,d)}","a: 6..30\nb: 4..30\nc: 6..30\nd: 4..30","$$P(A\\cap B)=\\dfrac⟦{a}⟧⟦{a+b+c+d}⟧$$ ; $$P_A(B)=\\dfrac⟦{a}⟧⟦{a+b}⟧$$ ; $$P_B(A)=\\dfrac⟦{a}⟧⟦{a+c}⟧$$"),
+  B("Arbre pondéré : P(A ∩ B)","$$P(A)={pa}$$ et $$P_A(B)={pb}$$. Calculer $$P(A\\cap B)$$.","pa: 0.2,0.3,0.4,0.5,0.6,0.7,0.8\npb: 0.1,0.2,0.3,0.4,0.5,0.6,0.9","$$P(A\\cap B)={pa}\\times{pb}={pa*pb}$$"),
+  B("Arbre pondéré : formule des probabilités totales","$$P(A)={pa}$$, $$P_A(B)={pb}$$ et $$P_⟦\\overline⟦A⟧⟧(B)={pc}$$. Calculer $$P(B)$$.","pa: 0.2,0.3,0.4,0.5,0.6,0.7,0.8\npb: 0.1,0.2,0.3,0.4,0.5,0.6,0.9\npc: 0.1,0.2,0.3,0.4,0.5","$$P(B)={pa}\\times{pb}+{1-pa}\\times{pc}={pa*pb+(1-pa)*pc}$$"),
+  B("Traduire une phrase en notation","Comment note-t-on « {phr(w)} » ?","w: 1,2,3","$${phn(w)}$$")]}
+});
+(()=>{
+ const byT=p=>Object.keys(DB.acts).find(u=>DB.acts[u].title.startsWith(p)),mm=(...ps)=>ps.map(byT).filter(Boolean).map(u=>[u,DB.acts[u].title,""]),bi=(...ids)=>ids.map(id=>[id,BI[id].title,BI[id].d]);
+ const ch=[
+  {k:"AU1",n:"Calcul numérique et algébrique",e:[...bi("au_cmp","au_ecr","au_ord","au_uni","au_lit","au_dev","au_eq","au_iso","au_app","au_sgn"),...mm("Ajouter des fractions","Soustraire des fractions","Produit de fractions","Quotient de fractions","Comparaison de fractions","Simplifier une fraction","Calculs avec les puissances","Calculs avec les puissances de 10","Sens des puissances de 10","Valeur décimale de fraction simple","Ordre de grandeur","Conversions classiques","Conversions vers les unités","Développer à l","Développer une identité","Factoriser avec les identités","Factoriser une somme","Réduire une expression du premier","Réduire avec des parenthèses","Résoudre une équation du premier degré","Résoudre une équation produit nul","Résoudre une équation se ramenant")]},
+  {k:"AU2",n:"Proportions et pourcentages",e:[...bi("au_prop"),...mm("Pourcentage d","Tableaux de proportionnalité")]},
+  {k:"AU3",n:"Évolutions et variations",e:[...bi("au_evo"),...mm("Augmenter ou réduire","Pourcentage global d")]},
+  {k:"AU4",n:"Fonctions et représentations",e:bi("au_fct","au_gra")},
+  {k:"AU5",n:"Statistiques",e:[...bi("au_sta"),...mm("Calculs statistiques")]},
+  {k:"AU6",n:"Probabilités",e:bi("au_pro")}];
+ const th={k:"AUT",n:"Automatismes du programme officiel 2026",ch};
+ const G=DB.lv.find(l=>l.k==="G");if(G)G.th.unshift(th);
+ const gi=DB.lv.findIndex(l=>l.k==="G");DB.lv.splice(gi+1,0,{k:"T1",n:"1re Techno",th:[th]});
+})();
 
 const IDX=(()=>{const m=new Map();DB.lv.forEach(L=>L.th.forEach(T=>T.ch.forEach(c=>c.e.forEach(e=>{let x=m.get(e[0]);if(!x){x={u:e[0],t:e[1],d:e[2]||"",l:[]};m.set(e[0],x)}if(!x.l.includes(L.n))x.l.push(L.n)}))));return [...m.values()]})();
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
