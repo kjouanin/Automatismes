@@ -150,6 +150,22 @@ details{margin:12px 0;color:var(--mut);font-size:.92rem}summary{cursor:pointer;c
 .lk-btns button{width:100%;font-size:1.2rem;padding:16px 24px}
 .pr.mb .cq{display:none}.pr.mb .ca{grid-column:1/-1;border-left:0;padding-left:0}
 .noans .pr.mb .cq{display:block}.noans .pr.mb .ca{display:none}
+.wrap{max-width:none;padding:16px clamp(14px,2.4vw,44px)}
+#corr{max-width:none}
+.credit{max-width:none;padding-left:clamp(14px,2.4vw,44px)}
+.cols{grid-template-columns:minmax(0,1fr) clamp(340px,24vw,460px);gap:clamp(16px,2vw,32px)}
+@media (max-width:900px){.cols{grid-template-columns:1fr}}
+.lv.mas{display:flex;gap:14px;align-items:flex-start}
+.mc{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
+#clist{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:14px;align-items:start}
+#clist .item{margin:0}
+@media (max-width:600px){#clist{grid-template-columns:1fr}}
+#launch{min-height:calc(100vh - 100px);display:flex;align-items:center;justify-content:center;padding-top:2vh;padding-bottom:6vh}
+.lk-card{width:100%;max-width:none;margin:0;padding:0;background:transparent;border:0;box-shadow:none;text-align:center}
+.lk-card .lk-title{font:600 clamp(3rem,11vw,10rem)/1.02 var(--serif);margin:0 0 .2em;overflow-wrap:anywhere}
+.lk-meta{font:700 clamp(1.8rem,4.6vw,3.6rem) var(--ui);color:var(--acc);margin:0 0 clamp(28px,7vh,72px)}
+.lk-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:20px;max-width:1300px;margin:0 auto}
+.lk-btns button{font-size:clamp(1.3rem,2.4vw,2rem);padding:clamp(20px,4vh,38px) 24px;border-radius:24px;width:100%}
 </style>
 </head>
 <body>
@@ -1702,6 +1718,17 @@ function rowC(c){
   return `<div class="ty"><label class="tl"><input type="checkbox" class="cb" data-u="${c.id}" data-i="-1" ${S[c.id]?"checked":""}> <span>${esc(c.l)}</span></label><div class="exm"><span class="ex" data-u="${c.id}" data-i="-1">${ex1(c.id,-1)}</span>${dice(c.id,-1)}</div></div>`;
 }
 const lvHtml=L=>`<h2 class="lvt">${esc(L.n)}</h2>`+L.th.map(T=>`<h3 class="thm">${esc(T.n)}</h3><div class="lv">${T.ch.map(c=>`<div class="th"><h4>${esc(c.n)}</h4>${c.e.map(e=>acRow(e[0],e[1],e[2])).join("")}</div>`).join("")}</div>`).join("");
+function masonry(){
+  document.querySelectorAll("#lib .lv").forEach(lv=>{
+    const cards=lv._cards||(lv._cards=[...lv.children]);
+    const n=Math.max(1,Math.floor(((lv.clientWidth||900)+14)/344));
+    if(lv._n===n)return;
+    lv._n=n;lv.innerHTML="";lv.classList.add("mas");
+    const cols=Array.from({length:n},()=>{const c=document.createElement("div");c.className="mc";lv.appendChild(c);return c});
+    cards.forEach(card=>{const c=cols.reduce((a,b)=>b.offsetHeight<a.offsetHeight||(b.offsetHeight===a.offsetHeight&&b.children.length<a.children.length)?b:a);c.appendChild(card)});
+  });
+}
+let rzt=0;window.addEventListener("resize",()=>{clearTimeout(rzt);rzt=setTimeout(masonry,150)});
 function drawLib(){
   const on=k=>!Q&&LVK===k?"on":"";
   $("#chips").innerHTML=`<button data-lv="all" class="${on("all")}">Tous les niveaux</button>`+DB.lv.map(L=>`<button data-lv="${L.k}" class="${on(L.k)}">${esc(L.n)}</button>`).join("")+(C.length?`<button data-lv="c" class="${on("c")}">Mes questions</button>`:"");
@@ -1711,7 +1738,7 @@ function drawLib(){
   else if(LVK==="c")h=`<h2 class="lvt">Mes questions</h2><div class="th" style="margin-top:10px">${C.map(rowC).join("")}</div>`;
   else if(LVK==="all")h=DB.lv.map(lvHtml).join("");
   else h=lvHtml(DB.lv.find(l=>l.k===LVK)||DB.lv[0]);
-  $("#lib").innerHTML=h;drawPanier();
+  $("#lib").innerHTML=h;masonry();drawPanier();
 }
 $("#chips").onclick=e=>{const b=e.target.closest("button");if(!b)return;LVK=b.dataset.lv;Q="";$("#srch").value="";drawLib();window.scrollTo(0,0)};
 $("#srch").addEventListener("input",e=>{Q=e.target.value.trim();drawLib()});
